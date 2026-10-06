@@ -1,0 +1,2 @@
+timestamp_utc,model,prompt_tokens,completion_tokens,total_tokens,latency_s,cache
+2026-10-06T06:42:37+00:00,deepseek/deepseek-v4-flash,583,304,887,5.47,miss

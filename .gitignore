@@ -18,3 +18,10 @@ Thumbs.db
 # Notes: outputs/ and notebooks ARE committed on purpose:
 # reviewers must see executed cell outputs and the LLM response cache
 # (zero-spend reproducibility).
+
+# -- Model weights / training checkpoints (never commit) --------------
+*.safetensors
+*.gguf
+**/merged_model/
+**/checkpoints/
+

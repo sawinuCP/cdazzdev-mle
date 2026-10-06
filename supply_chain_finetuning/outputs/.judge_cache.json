@@ -1,0 +1,3 @@
+{
+ "35fa757b7a03f8d33b2923110aab6cbf21f4090e4c861ba7fd14ac182dd922eb": "{\"schema_adherence\": 5, \"class_correct\": 5, \"severity_calibration\": 4, \"root_cause_causality\": 5, \"action_quality\": 4, \"evidence_grounding\": 5, \"total\": 28, \"one_line_reason\": \"Correct congestion classification fully supported by the doubled transit and high congestion index, with slightly under-specified severity and one generic customer-notification action.\"}"
+}

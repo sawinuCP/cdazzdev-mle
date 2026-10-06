@@ -44,7 +44,28 @@ file carries the inline tag and a row here.)*
 | `equity_research/notebooks/equity_research.ipynb` | AI-assisted artifact | Generated and executed by Cline (Claude Sonnet 5.5); the LLM outputs inside were produced by GLM-5.3-Flash via the configured OpenAI-compatible gateway and replayed from the committed cache |
 | `equity_research/README.md` | AI-assisted document | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'project README: purpose, setup, provider switching, results summary', Date: 2026-10-06` |
 
-*(Teacher-model prompts do not apply to this project — it generates no synthetic training data.)*
+## Supply-chain anomaly analyst (`supply_chain_finetuning/`)
+
+| File | Type | Entry |
+|---|---|---|
+| `supply_chain_finetuning/src/config.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'central config: taxonomy, scenario matrix, gates, thresholds, paths', Date: 2026-10-06` |
+| `supply_chain_finetuning/src/schemas.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'pydantic models: anomaly input, output contract with mechanical validators, teacher wrapper', Date: 2026-10-06` |
+| `supply_chain_finetuning/src/prompts.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'all prompt text as documented constants: teacher, student baseline, judge', Date: 2026-10-06` |
+| `supply_chain_finetuning/src/llm_client.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'shared LLM client: env-prefix settings, backoff, JSON parse, cache, usage CSV log', Date: 2026-10-06` |
+| `supply_chain_finetuning/src/scenario_matrix.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'scenario matrix builder: 540 tuples plus stratified deterministic sampling', Date: 2026-10-06` |
+| `supply_chain_finetuning/scripts/generate_dataset.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'teacher dataset generation with seven acceptance gates, resumable, usage-logged', Date: 2026-10-06` |
+| `supply_chain_finetuning/scripts/diversity_report.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'dataset diversity report: token histograms, keyword coverage, heatmap, near-duplicates', Date: 2026-10-06` |
+| `supply_chain_finetuning/scripts/build_jsonl.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'chat-format JSONL builder with exact stratified 120/15/15 split', Date: 2026-10-06` |
+| `supply_chain_finetuning/evaluation/normalize.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'JSON extraction, schema validation and canonicalization for model outputs', Date: 2026-10-06` |
+| `supply_chain_finetuning/evaluation/metrics.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'ROUGE-L, BERTScore, programmatic checks and ground guard for base vs tuned comparison', Date: 2026-10-06` |
+| `supply_chain_finetuning/evaluation/judge.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'blinded LLM-as-judge with schema-validated scoring, shuffling and consistency gauge', Date: 2026-10-06` |
+| `supply_chain_finetuning/evaluation/manual_audit.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'manual hallucination audit template generator and rate calculator (labels stay human)', Date: 2026-10-06` |
+| `supply_chain_finetuning/tests/*` (7 files + conftest) | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'offline pytest suite: schemas, scenario matrix, generation gates, JSONL split, metrics, hygiene', Date: 2026-10-06` |
+| `supply_chain_finetuning/notebooks/finetune_and_evaluate.ipynb` | AI-assisted artifact | Generated and validated by Cline (Claude Sonnet 5.5); to be executed by the user on Colab T4 |
+| `supply_chain_finetuning/README.md` | AI-assisted document | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'project README: purpose, pipeline overview, stage instructions, results placeholders', Date: 2026-10-06` |
+| `supply_chain_finetuning/use_case.md` | AI-assisted document | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'structured use-case statement: input/output contract, taxonomy, correctness definitions', Date: 2026-10-06` |
+| `supply_chain_finetuning/TRAINING_NOTES.md` | AI-assisted document | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'hyperparameter table with reasons, version-pinning notes, pre-committed loss responses, OOM playbook', Date: 2026-10-06` |
+| `supply_chain_finetuning/data/teacher_system_prompt.txt` | Teacher-generated artifact | Verbatim copy of `src/prompts.py::TEACHER_SYSTEM`; dataset provenance record |
 
 ## Teacher-model prompts
 

@@ -1,0 +1,16 @@
+# Google Colab (free T4) training/evaluation stack.
+# Pins are chosen for mutual compatibility: TRL renames arguments between
+# releases (max_seq_length -> max_length etc.), so the notebook also probes
+# the installed SFTConfig signature at runtime instead of trusting defaults.
+#
+# Colab ships torch; pinning the major line keeps bitsandbytes/flash kernels happy.
+torch>=2.3,<2.6
+transformers>=4.44,<4.47
+trl>=0.11,<0.13
+peft>=0.12,<0.14
+bitsandbytes>=0.43
+accelerate>=0.34
+datasets>=2.20
+huggingface_hub>=0.24
+rouge-score==0.1.2
+bert-score==0.3.13

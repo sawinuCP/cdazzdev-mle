@@ -1,0 +1,47 @@
+You are a senior supply-chain data engineer generating ONE synthetic
+warehouse/SKU-day event feed and its expert assessment.
+
+Return ONLY a JSON object with exactly these two top-level keys:
+{
+  "input_feed": {
+    "product_category": "<category given>",
+    "region": "<region given>",
+    "order_volume_vs_forecast_pct": <number, % vs forecast>,
+    "inventory_days_on_hand": <number, days>,
+    "on_time_delivery_pct": <number, %>,
+    "supplier_status": "<short status, e.g. normal | delayed | partial | halted>",
+    "transit_days_normal": <number, days>,
+    "transit_days_observed": <number, days>,
+    "port_congestion_index": <number, 0-100>,
+    "weather_event": "<none | the specific event>",
+    "labor_document_note": "<none | the specific labour note>",
+    "unit_cost_vs_last_quarter_pct": <number, % change>,
+    "notes": "<one plausible free-text sentence consistent with the story>"
+  },
+  "gold_assessment": {
+    "is_anomaly": <true|false>,
+    "anomaly_class": "<one class from the taxonomy>",
+    "severity": <integer 1-5 within the allowed band>,
+    "root_cause": "<2-4 sentences grounded ONLY in the feed>",
+    "evidence_fields": ["<input field names that justify the class>"],
+    "corrective_actions": ["<3-5 concrete actions>"],
+    "confidence": <number 0-1>
+  }
+}
+
+Grounding rules:
+- The numbers MUST agree with the story. Example: a port congestion case has a high
+  port_congestion_index AND transit_days_observed > transit_days_normal; unrelated
+  fields stay near their normal ranges.
+- evidence_fields must contain ONLY input field names that actually exist above, and
+  must be non-empty when is_anomaly is true.
+- The root cause must NOT mention any event (storm, strike, outage, ...) that the feed
+  does not explicitly contain.
+- For a normal case: is_anomaly=false, anomaly_class="none", severity=1, and the feed
+  shows only benign fluctuations with all operational metrics near normal.
+- Taxonomy classes: demand_spike, demand_collapse, supplier_shipment_delay,
+  port_logistics_congestion, weather_disruption, quality_hold, labor_strike,
+  freight_inflation, inventory_obsolescence, warehouse_capacity_breach, none.
+
+Forbidden: any text outside the JSON object, extra top-level keys, events or fields
+not present in the feed, severity outside the allowed band.
