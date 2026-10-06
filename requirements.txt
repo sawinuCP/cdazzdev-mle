@@ -1,0 +1,40 @@
+# Root requirements — shared by task1_financial / task2_genai / task3_agentic
+# Colab:  git clone <repo> && pip install -r requirements.txt
+
+# Core runtime
+pydantic>=2.7,<3
+openai>=1.40
+requests>=2.31
+pandas>=2.0
+numpy>=1.26
+matplotlib>=3.8
+python-dotenv>=1.0
+
+# Market data + news
+yfinance>=0.2.40
+lxml>=5.0
+
+# Agent web search (package renamed upstream: pin the working one)
+duckduckgo-search==8.1.1
+
+# Task 2 data tooling
+rapidfuzz>=3.9
+
+# Task 2 evaluation
+rouge-score>=0.1.2
+bert-score>=0.3.13
+
+# Tests
+pytest>=8.0
+
+# ── Task 2 training stack (Colab T4) ─────────────────────────────────
+# Pinned on purpose: TRL argument names change between releases
+# (e.g. max_seq_length -> max_length), and Phi-3 fused-projection module
+# names require these exact major lines.
+transformers>=4.44,<4.47
+trl>=0.11,<0.13
+peft>=0.12,<0.14
+bitsandbytes>=0.43
+accelerate>=0.34
+datasets>=2.20
+sentencepiece>=0.2

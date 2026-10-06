@@ -1,0 +1,58 @@
+{
+  "ticker": "NVDA",
+  "current_price": 238.89999389648438,
+  "prev_close": 233.9499969482422,
+  "daily_return_pct": 2.1158,
+  "week52_high": 240.10000610351562,
+  "week52_low": 164.27000427246094,
+  "pct_from_52w_high": -0.4998,
+  "pe_trailing": 30.202276,
+  "ytd_return_pct": 28.0965,
+  "ytd_note": "",
+  "indicators": {
+    "price": 238.89999389648438,
+    "sma_50": 218.91940002441407,
+    "sma_200": 201.02050003051758,
+    "price_vs_sma50": "above",
+    "price_vs_sma200": "above",
+    "sma50_vs_sma200": "above",
+    "rsi_14": 66.90100166136293,
+    "macd": 4.172728503021119,
+    "macd_signal": 2.9636778057111592,
+    "macd_hist": 1.20905069730996,
+    "macd_fresh_cross": false,
+    "macd_hist_recent": [
+      0.4993,
+      0.5017,
+      0.6141,
+      0.8272,
+      1.2091
+    ],
+    "pct_b": 1.0290352653845136,
+    "bandwidth": 0.12381906221795017,
+    "rsi_note": ""
+  },
+  "momentum_signal": "bullish",
+  "momentum_components": {
+    "price_above_sma50": true,
+    "price_above_sma200": true,
+    "sma50_above_sma200": true,
+    "macd_hist_positive": true,
+    "rsi_in_bullish_band": true,
+    "bullish_points": 5,
+    "bearish_points": 0,
+    "net": 5,
+    "rsi_note": ""
+  },
+  "data_quality": {
+    "ticker": "NVDA",
+    "period": "3y",
+    "bars": 751,
+    "missing_bars_dropped": 0,
+    "first_date": "2023-10-06",
+    "last_date": "2026-10-05",
+    "span_days": 1095
+  },
+  "stale": false,
+  "generated_at": "2026-10-06T05:09:41+00:00"
+}

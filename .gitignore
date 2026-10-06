@@ -1,0 +1,20 @@
+# ── Secrets: never commit ─────────────────────────────────────────────
+.env
+
+# ── Python artifacts ──────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ── Runtime logs (directories kept via .gitkeep) ─────────────────────
+logs/*.log
+**/logs/*.log
+
+# ── OS noise ──────────────────────────────────────────────────────────
+Thumbs.db
+.DS_Store
+
+# Notes: outputs/ and notebooks ARE committed on purpose:
+# reviewers must see executed cell outputs and the LLM response cache
+# (zero-spend reproducibility).

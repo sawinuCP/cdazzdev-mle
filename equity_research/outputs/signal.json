@@ -1,0 +1,12 @@
+{
+  "action": "BUY",
+  "justification": "Price holding above both the 50-day and 200-day moving averages while the MACD histogram expands from 0.50 to 1.21 over five sessions points to an accelerating uptrend rather than a fading one. That momentum strength is tempered by a %B above 1.0, meaning price closed beyond the upper Bollinger Band, and RSI near 67 sitting just under overbought territory with the stock within half a percent of its 52-week high. Positive news sentiment (9 positive vs. 3 negative headlines, including record-high Nasdaq coverage naming Nvidia a rally leader) reinforces the fundamental backdrop behind the technical strength. On balance, the aligned trend, accelerating momentum, and supportive sentiment justify a BUY, though the stretched short-term setup argues for scaling in rather than chasing the breakout.",
+  "key_drivers": [
+    "Full bullish momentum alignment (5/5 components, price above both MAs with golden cross structure)",
+    "Accelerating MACD histogram over the last five sessions",
+    "Positive news sentiment with sector-wide record-high tailwind",
+    "Short-term overextension: %B above 1.0 and price at 52-week high"
+  ],
+  "risk_notes": "The stock is short-term stretched: price closed above the upper Bollinger Band, RSI is approaching 70, and the 52-week high near $240 may act as near-term resistance or trigger profit-taking. A pullback toward the 50-day moving average would improve entry risk/reward. As a crowded momentum name, any negative headline on AI demand or semiconductors could produce outsized downside given the extended positioning.",
+  "generated_by": "llm"
+}

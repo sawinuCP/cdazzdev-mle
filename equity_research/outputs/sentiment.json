@@ -1,0 +1,170 @@
+{
+  "overall_score": 0.3173,
+  "label": "positive",
+  "counts": {
+    "positive": 9,
+    "negative": 3,
+    "neutral": 7
+  },
+  "top_headlines": [
+    {
+      "headline": "Here's How Many Shares of Apple You'd Need for $10,000 in Yearly Dividends",
+      "sentiment": "neutral",
+      "confidence": 0.9,
+      "brief_reason": "The headline concerns Apple's dividend yield and has no direct connection to NVIDIA's fundamentals or operations.",
+      "fallback": false
+    },
+    {
+      "headline": "Could Disney End Up Being the Next Nike?",
+      "sentiment": "neutral",
+      "confidence": 0.9,
+      "brief_reason": "The headline discusses Disney and Nike with no mention of NVIDIA, semiconductors, or AI demand, so it provides no fundamental driver for NVDA's price.",
+      "fallback": false
+    },
+    {
+      "headline": "Dow Jones Futures: Nasdaq Hits Record Highs; TSMC, Nvidia, Elon Musk-Led SpaceX, Tesla Rally",
+      "sentiment": "positive",
+      "confidence": 0.75,
+      "brief_reason": "Nvidia is explicitly named among stocks rallying as the Nasdaq hits record highs, signaling positive near-term momentum, though the driver is broad market strength rather than company-specific news.",
+      "fallback": false
+    }
+  ],
+  "items": [
+    {
+      "headline": "Dan Niles Backs Alphabet and Meta as Google Cloud Grows Over 80%",
+      "sentiment": "positive",
+      "confidence": 0.6,
+      "brief_reason": "Google Cloud's 80%+ growth signals surging hyperscaler AI capex, a demand tailwind for Nvidia's data-center GPUs, though the headline's focus on Alphabet/Meta makes the NVDA read-through indirect.",
+      "fallback": false
+    },
+    {
+      "headline": "Why Did NVDA, TSM, WBD Stocks Hit 52-Week Highs Today?",
+      "sentiment": "positive",
+      "confidence": 0.65,
+      "brief_reason": "NVDA reaching a 52-week high signals strong bullish momentum that typically attracts continued buying interest in the short term.",
+      "fallback": false
+    },
+    {
+      "headline": "‘One Chip In The World Fueling AI Revolution:’ Dan Ives Supports Nvidia Bull Case As Stock Hits Fresh High",
+      "sentiment": "positive",
+      "confidence": 0.7,
+      "brief_reason": "Prominent bullish analyst Dan Ives publicly reinforces the NVDA bull thesis amid record-high momentum, likely supporting continued positive sentiment.",
+      "fallback": false
+    },
+    {
+      "headline": "Prediction: Nvidia Will Hit a $10 Trillion Market Cap by the End of 2028",
+      "sentiment": "positive",
+      "confidence": 0.55,
+      "brief_reason": "Bullish opinion piece projecting massive long-term upside, but it is speculative commentary with no concrete catalyst, so the short-term price impact is likely modest.",
+      "fallback": false
+    },
+    {
+      "headline": "NYSE’s Parent Just Filed to Tokenize 63 US Stocks on a Crypto-Native Exchange — And the SEC Already Gave It Permission",
+      "sentiment": "neutral",
+      "confidence": 0.6,
+      "brief_reason": "The news concerns ICE's tokenization platform and crypto-market infrastructure, with no direct operational or earnings driver for NVDA; any effect (e.g., if NVDA is among the 63 tokenized names) is marginal liquidity-related and unlikely to move the stock short-term.",
+      "fallback": false
+    },
+    {
+      "headline": "Dan Ives Says Nvidia Fuels AI Market, But What If It Has a Lehman Moment?",
+      "sentiment": "negative",
+      "confidence": 0.6,
+      "brief_reason": "The provocative 'Lehman moment' framing introduces a systemic-collapse fear narrative around NVDA, which dominates headline sentiment despite the embedded bullish analyst quote.",
+      "fallback": false
+    },
+    {
+      "headline": "Nvidia vs. Taiwan Semiconductor Manufacturing: Which Technology Stock Is a Better Buy in 2026?",
+      "sentiment": "neutral",
+      "confidence": 0.7,
+      "brief_reason": "A routine comparison/opinion piece with no new earnings, guidance, or material news, so it is unlikely to move NVDA's price in either direction.",
+      "fallback": false
+    },
+    {
+      "headline": "Dow Jones Futures: Nasdaq Hits Record Highs; TSMC, Nvidia, Elon Musk-Led SpaceX, Tesla Rally",
+      "sentiment": "positive",
+      "confidence": 0.75,
+      "brief_reason": "Nvidia is explicitly named among stocks rallying as the Nasdaq hits record highs, signaling positive near-term momentum, though the driver is broad market strength rather than company-specific news.",
+      "fallback": false
+    },
+    {
+      "headline": "Is Michael Burry Right About MercadoLibre?",
+      "sentiment": "neutral",
+      "confidence": 0.75,
+      "brief_reason": "The headline concerns Burry's view on MercadoLibre, not NVIDIA, so it offers no direct catalyst for NVDA's price.",
+      "fallback": false
+    },
+    {
+      "headline": "Here's How Many Shares of Apple You'd Need for $10,000 in Yearly Dividends",
+      "sentiment": "neutral",
+      "confidence": 0.9,
+      "brief_reason": "The headline concerns Apple's dividend yield and has no direct connection to NVIDIA's fundamentals or operations.",
+      "fallback": false
+    },
+    {
+      "headline": "The Bond Market Just Sent Investors a Warning. Here's the Mistake I'd Avoid Making With the S&P 500.",
+      "sentiment": "negative",
+      "confidence": 0.55,
+      "brief_reason": "A bond-market warning implies rate/yield pressure and broad equity risk-off, which disproportionately weighs on high-beta growth stocks like NVDA, though the piece is general market commentary rather than NVDA-specific news.",
+      "fallback": false
+    },
+    {
+      "headline": "Could Disney End Up Being the Next Nike?",
+      "sentiment": "neutral",
+      "confidence": 0.9,
+      "brief_reason": "The headline discusses Disney and Nike with no mention of NVIDIA, semiconductors, or AI demand, so it provides no fundamental driver for NVDA's price.",
+      "fallback": false
+    },
+    {
+      "headline": "Elon Musk Confirmed Terafab Talks With TSMC. Intel Has Been Its Only Named Chip Partner.",
+      "sentiment": "neutral",
+      "confidence": 0.55,
+      "brief_reason": "NVDA is not a party to the TSMC Terafab talks; the story centers on Musk and Intel foundry capacity with no clear near-term supply or demand impact on NVIDIA.",
+      "fallback": false
+    },
+    {
+      "headline": "Dow, S&P 500, Nasdaq Futures Edge Higher After Nasdaq Climbs To Record High: SPCX, USAR, CEG, NVAX Stocks In Focus",
+      "sentiment": "positive",
+      "confidence": 0.55,
+      "brief_reason": "Broad market strength with Nasdaq at record highs and futures rising is a mild tailwind for NVDA as a major Nasdaq component, though the headline contains no NVDA-specific catalyst.",
+      "fallback": false
+    },
+    {
+      "headline": "Asian stocks mixed despite tech-led Wall St record",
+      "sentiment": "positive",
+      "confidence": 0.55,
+      "brief_reason": "The tech-led Wall Street record high is a mild positive for NVDA as a leading tech stock, though the mixed Asian session and general (non-company-specific) nature of the headline limit conviction.",
+      "fallback": false
+    },
+    {
+      "headline": "Rate Hikes Are Back. Here Are 3 Industrial Stocks Built to Win Anyway",
+      "sentiment": "negative",
+      "confidence": 0.55,
+      "brief_reason": "Renewed rate hikes pressure valuations of high-multiple growth/tech names like NVDA, and the article's favored industrials exclude semiconductors.",
+      "fallback": false
+    },
+    {
+      "headline": "U.S. stock futures steady after Nasdaq hits record on reduced Fed hike bets",
+      "sentiment": "positive",
+      "confidence": 0.6,
+      "brief_reason": "Reduced Fed rate-hike expectations and a record Nasdaq favor high-growth tech names like NVDA, though the headline is macro-level rather than company-specific.",
+      "fallback": false
+    },
+    {
+      "headline": "Here's What $10,000 in Sandisk Stock Could Be Worth if Memory Demand Holds Through 2030",
+      "sentiment": "neutral",
+      "confidence": 0.7,
+      "brief_reason": "The headline is a speculative projection about Sandisk, not NVDA, so it has no direct driver for NVDA beyond a mildly positive indirect read on memory/AI demand.",
+      "fallback": false
+    },
+    {
+      "headline": "Nasdaq 100 Hits Record Highs As Investors Shrug Off Pressure From Soaring Yields — NVDA, SPCX, CRML, TSLA, QCOM In Focus",
+      "sentiment": "positive",
+      "confidence": 0.7,
+      "brief_reason": "Record-high Nasdaq rally with NVDA explicitly named as a focus stock signals broad bullish momentum, though the effect is market-wide rather than NVDA-specific.",
+      "fallback": false
+    }
+  ],
+  "fallback_count": 0,
+  "model_id": "z-ai/glm-5.3-flash",
+  "generated_at": "2026-10-06T05:15:46+00:00"
+}

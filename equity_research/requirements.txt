@@ -1,0 +1,12 @@
+# Pinned runtime dependencies for the equity research assistant.
+# (The repository root requirements.txt carries the shared superset.)
+
+pydantic==2.13.4
+openai==1.109.1
+requests==2.34.2
+pandas==3.0.5
+numpy==1.26.4
+matplotlib==3.10.0
+python-dotenv==1.2.2
+yfinance==1.7.0
+pytest==8.4.2
