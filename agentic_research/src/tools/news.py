@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'news tool with ladder, both yfinance shapes, rss parsing, dedupe and coverage label', Date: 2026-10-06
 """get_news(ticker, n): headlines with a source ladder and dedupe."""
 from __future__ import annotations
 
@@ -19,16 +18,13 @@ from .base import make_result
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class GetNewsArgs(BaseModel):
     ticker: str = Field(min_length=1)
     n: int = Field(default=config.NEWS_DEFAULT_COUNT, ge=config.NEWS_MIN_COUNT,
                    le=config.NEWS_MAX_COUNT)
 
-
 def _normalize_title_key(title: str) -> str:
     return re.sub(r"[^a-z0-9]", "", html.unescape(title or "").lower())
-
 
 def _normalize_pubdate(raw: str) -> str:
     raw = (raw or "").strip()
@@ -42,7 +38,6 @@ def _normalize_pubdate(raw: str) -> str:
         return datetime.fromisoformat(raw.replace("Z", "+00:00")).date().isoformat()
     except (TypeError, ValueError):
         return raw
-
 
 def _normalize_yf_item(item: Dict[str, Any]) -> Optional[Dict[str, str]]:
     """Handle BOTH yfinance news shapes (legacy flat and nested under content)."""
@@ -76,7 +71,6 @@ def _normalize_yf_item(item: Dict[str, Any]) -> Optional[Dict[str, str]]:
     return {"title": title, "source": str(source or "Yahoo Finance"),
             "published": _normalize_pubdate(str(published)), "url": url}
 
-
 def _parse_rss(xml_text: str, default_source: str) -> List[Dict[str, str]]:
     items = []
     for node in ET.fromstring(xml_text).iter("item"):
@@ -90,7 +84,6 @@ def _parse_rss(xml_text: str, default_source: str) -> List[Dict[str, str]]:
             "url": (node.findtext("link") or "").strip(),
         })
     return items
-
 
 def get_news(ticker: str, n: int) -> ToolResult:
     """Ladder yfinance -> Yahoo RSS -> Google RSS; dedupe; coverage label."""
@@ -137,7 +130,6 @@ def get_news(ticker: str, n: int) -> ToolResult:
         "partial" if len(items) >= partial_min else "low")
     return make_result(True, data={"headlines": items, "coverage": coverage,
                                    "sources": used}, source="news-ladder")
-
 
 def news_digest(data: Dict[str, Any]) -> str:
     headlines = data.get("headlines", [])

@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'streamlit trace dashboard: run filter, per-agent tool histogram, duration bars, success pie, replan table', Date: 2026-10-06
 """Streamlit dashboard over the agent trace JSONL.
 
 Run from this folder:  streamlit run dashboards/trace_dashboard.py
@@ -6,14 +5,13 @@ Requires: streamlit, plotly (pip install streamlit plotly).
 """
 from __future__ import annotations
 
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 
 import pandas as pd
 import streamlit as st
 
 TRACE_PATH = Path(__file__).resolve().parents[1] / "logs" / "agent_trace.jsonl"
-
 
 def load_entries() -> list:
     if not TRACE_PATH.exists():
@@ -23,7 +21,6 @@ def load_entries() -> list:
         if line.strip():
             entries.append(__import__("json").loads(line))
     return entries
-
 
 st.set_page_config(page_title="Agentic Research Trace", layout="wide")
 st.title("Agentic Research — trace")

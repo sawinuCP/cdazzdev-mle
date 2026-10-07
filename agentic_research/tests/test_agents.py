@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'agent loop verification: autonomous order, duplicate guard, step cap, replan stamps, malformed retry', Date: 2026-10-06
 """Offline verification for the agent loop (mocked LLM + data sources)."""
 from __future__ import annotations
 
@@ -12,16 +11,13 @@ from src.runtime.memory import MemoryStore
 from src.runtime.tracing import TraceLogger
 from helpers import FakeLLM, synthetic_frame
 
-
 @pytest.fixture
 def store():
     return MemoryStore()
 
-
 @pytest.fixture
 def trace(tmp_path):
     return TraceLogger(path=tmp_path / "trace.jsonl")
-
 
 @pytest.fixture(autouse=True)
 def mock_data_sources(monkeypatch):
@@ -49,16 +45,13 @@ def mock_data_sources(monkeypatch):
                         "estimates": 0},
             source="llm"))
 
-
 def _llm_scripted(actions: list) -> FakeLLM:
     return FakeLLM(actions)
-
 
 def _action(tool: str, args: dict = None, thought: str = "t",
             replan_reason: str = None) -> dict:
     return {"thought": thought, "action": tool, "args": args or {},
             "replan_reason": replan_reason}
-
 
 def test_agent_chooses_its_own_order_a(trace, store):
     llm = _llm_scripted([
@@ -73,7 +66,6 @@ def test_agent_chooses_its_own_order_a(trace, store):
     assert executed[0] == config.TOOL_GET_PRICE_DATA
     assert executed[1] == config.TOOL_CALCULATE_VOLATILITY
 
-
 def test_agent_chooses_a_different_order_b(trace, store):
     """ TWO different scripted orders both work - the order is not hardcoded."""
     llm = _llm_scripted([
@@ -87,7 +79,6 @@ def test_agent_chooses_a_different_order_b(trace, store):
     executed = [o["tool"] for o in summary["observations"]]
     assert executed == [config.TOOL_WEB_SEARCH, config.TOOL_GET_NEWS]
 
-
 def test_duplicate_call_warns_then_is_refused(trace, store):
     llm = _llm_scripted([
         _action(config.TOOL_GET_NEWS, {"ticker": "NVDA", "n": 10}),
@@ -100,7 +91,6 @@ def test_duplicate_call_warns_then_is_refused(trace, store):
     summary = loop.run()
     digests = [o["digest"] for o in summary["observations"]]
     assert any("REFUSED" in d and "repeated identical call" in d for d in digests)
-
 
 def test_iteration_cap_stops_the_loop(trace, store):
     llm = FakeLLM([_action(config.TOOL_GET_PRICE_DATA, {"period": "1y"}),
@@ -125,7 +115,6 @@ def test_replan_stamped_from_llm_reason(trace, store):
     assert len(summary["replans"]) == 1
     assert "changed my plan" in summary["replans"][0]["reason"]
     assert summary["replans"][0]["to"] == config.TOOL_WEB_SEARCH
-
 
 def test_replan_stamped_automatically_after_failed_observation(trace, store):
     llm = _llm_scripted([
@@ -157,7 +146,6 @@ def test_replan_stamped_automatically_after_failed_observation(trace, store):
     reasons = [r["reason"] for r in summary["replans"]]
     assert any("previous action 'get_price_data' failed" in reason for reason in reasons)
 
-
 def test_malformed_action_is_retried_then_skipped(trace, store):
     llm = _llm_scripted([
         AssertionError("unused"),
@@ -177,7 +165,6 @@ def test_malformed_action_is_retried_then_skipped(trace, store):
     assert any("not a valid action object" in w for w in loop.warnings) or \
         any(entry["tool"] == config.TOOL_GET_NEWS for entry in summary["observations"])
     assert summary["finished"] is True  # the loop recovered and reached finish
-
 
 def test_fault_injection_makes_the_tool_fail(trace, store, monkeypatch):
     monkeypatch.setattr(config, "FAULT_INJECT", {config.TOOL_GET_NEWS: "empty"})

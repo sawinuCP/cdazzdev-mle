@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'OpenAI-compatible LLM client: retries, JSON repair, cache, failure log', Date: 2026-10-06
 """OpenAI-compatible LLM client.
 
 Design notes:
@@ -38,23 +37,18 @@ from . import prompts
 
 TModel = TypeVar("TModel", bound=BaseModel)
 
-
 class LLMConfigurationError(RuntimeError):
     """Missing/invalid LLM environment configuration."""
-
 
 class LLMError(RuntimeError):
     """LLM call failed after retries (transport, budget, or empty content)."""
 
-
 class LLMValidationError(LLMError):
     """Response could not be parsed/validated even after the repair attempt."""
-
 
 _LOGGER = logging.getLogger("equity_research.llm")
 _FAILURE_HANDLER_ATTACHED = False
 _FAILURE_RECORDS: List[Dict[str, str]] = []
-
 
 def _attach_failure_handler() -> None:
     """Attach the failures file handler once (idempotent)."""
@@ -69,7 +63,6 @@ def _attach_failure_handler() -> None:
     _LOGGER.propagate = False
     _FAILURE_HANDLER_ATTACHED = True
 
-
 def record_failure(stage: str, error_type: str, detail: str) -> None:
     """Log a failure to the failure log and the in-memory notebook mirror."""
     _attach_failure_handler()
@@ -82,11 +75,9 @@ def record_failure(stage: str, error_type: str, detail: str) -> None:
     _FAILURE_RECORDS.append(entry)
     _LOGGER.warning("stage=%s type=%s detail=%s", stage, error_type, entry["detail"])
 
-
 def failure_records() -> List[Dict[str, str]]:
     """In-memory failure mirror (displayed in the notebook)."""
     return list(_FAILURE_RECORDS)
-
 
 def load_env() -> None:
     """Load a ``.env`` walking upwards from the current directory.
@@ -101,7 +92,6 @@ def load_env() -> None:
     except ImportError:  # pragma: no cover - python-dotenv is a declared dependency
         pass
 
-
 @dataclass(frozen=True)
 class LLMSettings:
     """Resolved LLM connection settings."""
@@ -110,7 +100,6 @@ class LLMSettings:
     api_key: str
     model: str
     timeout_s: float
-
 
 def settings_from_env() -> LLMSettings:
     """Resolve settings from the environment; fail loudly but kindly."""
@@ -146,7 +135,7 @@ class LLMClient:
         self.calls_made = 0
         self.cache_hits = 0
 
-    # ── plumbing ──────────────────────────────────────────────────────
+    # plumbing
     @property
     def client(self) -> OpenAI:
         if self._client is None:
@@ -251,7 +240,7 @@ class LLMClient:
             raise LLMError("model returned empty content even with a doubled token budget")
         raise LLMError(f"LLM call failed after retries: {last_error}")
 
-    # ── JSON path ─────────────────────────────────────────────────────
+    # JSON path
     @staticmethod
     def _strip_fences(content: str) -> str:
         """Remove markdown code fences and keep the outermost JSON object."""
@@ -328,7 +317,6 @@ class LLMClient:
         if self.use_cache:
             self._write_cache(key, content)
         return value
-
 
 def client_from_env(use_cache: bool = True) -> LLMClient:
     """Build a client from environment variables (the standard entry point)."""

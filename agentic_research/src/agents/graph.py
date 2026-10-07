@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'LangGraph state machine: cache check, two-agent roles, exactly-one critique cycle, save cache', Date: 2026-10-06
 """LangGraph state machine for the two-agent research mode.
 
 The typed state flows through: cache_check -> agent_a_brief ->
@@ -29,7 +28,6 @@ from ..runtime.tracing import TraceLogger
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class ResearchState(TypedDict, total=False):
     """Typed graph state (values may hold non-serializable runtime objects)."""
 
@@ -53,7 +51,6 @@ class ResearchState(TypedDict, total=False):
     degraded: bool
     error: str
 
-
 def _crash_wrapper(node_fn):
     """No node may escape with an unhandled exception."""
 
@@ -67,7 +64,6 @@ def _crash_wrapper(node_fn):
 
     wrapped.__name__ = node_fn.__name__
     return wrapped
-
 
 def _node_cache_check(state: ResearchState) -> Dict[str, Any]:
     payload, error = load_cache(state["ticker"], config.CACHE_DIR)
@@ -96,7 +92,6 @@ def _node_agent_a_brief(state: ResearchState) -> Dict[str, Any]:
             "tool_call_count": state["store"].tool_call_count,
             "replans": state["store"].replans}
 
-
 def _node_agent_b_gather_and_critique(state: ResearchState) -> Dict[str, Any]:
     brief = AgentBrief.model_validate(state["brief"])
     headlines, commentary, _gather = run_agent_b_gather(
@@ -112,13 +107,6 @@ def _node_agent_b_gather_and_critique(state: ResearchState) -> Dict[str, Any]:
     return {"critique": critique.model_dump(), "headlines": headlines,
             "commentary": commentary, "gaps": gaps, "critique_count": 0}
 
-
-def _route_critique(state: ResearchState) -> str:
-    if state.get("gaps") and state.get("critique_count", 0) < config.CRITIQUE_CYCLE_CAP:
-        return "clarify"
-    return "final"
-
-
 def _node_agent_a_respond(state: ResearchState) -> Dict[str, Any]:
     critique = CritiqueRequest.model_validate(state["critique"])
     response, brief_v2 = run_agent_a_respond(state["ticker"], critique, state["llm"],
@@ -131,7 +119,6 @@ def _node_agent_a_respond(state: ResearchState) -> Dict[str, Any]:
             "tool_call_count": state["store"].tool_call_count,
             "replans": state["store"].replans, "critique_count": 1}
 
-
 def _node_agent_b_final_report(state: ResearchState) -> Dict[str, Any]:
     brief = AgentBrief.model_validate(state["brief"])
     report = run_agent_b_final(state["ticker"], brief,
@@ -141,7 +128,6 @@ def _node_agent_b_final_report(state: ResearchState) -> Dict[str, Any]:
     return {"report": report.model_dump(),
             "tool_call_count": state["store"].tool_call_count,
             "replans": state["store"].replans}
-
 
 def _node_save_cache(state: ResearchState) -> Dict[str, Any]:
     payload = {
@@ -162,7 +148,6 @@ def _route_cache(state: ResearchState) -> str:
     """Conditional edge after the cache probe."""
     return "hit" if state.get("cache_hit") else "miss"
 
-
 def _node_degraded_report(state: ResearchState) -> Dict[str, Any]:
     """Terminal path when a node crashed: minimal valid report from tool data."""
     report = _fallback_report(state["ticker"], state["store"],
@@ -171,7 +156,6 @@ def _node_degraded_report(state: ResearchState) -> Dict[str, Any]:
                        args={"ticker": state["ticker"]},
                        output=state.get("error", "degraded"), ok=False)
     return {"report": report.model_dump(), "degraded": True}
-
 
 def build_graph(llm: LLMClient, trace: TraceLogger, store: MemoryStore):
     """Compile the research graph with the shared runtime objects bound in.
@@ -244,7 +228,6 @@ def build_graph(llm: LLMClient, trace: TraceLogger, store: MemoryStore):
     graph.add_edge("save_cache", END)
     graph.add_edge("degraded_report", END)
     return graph.compile()
-
 
 def run_research(ticker: str, llm: Optional[LLMClient] = None,
                  use_cache: bool = True) -> Dict[str, Any]:

@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'HTML research brief with three-panel matplotlib chart embedded base64 and risk disclaimer', Date: 2026-10-06
 """One-page equity research brief: Markdown source + styled HTML + chart.
 
 The HTML is a single self-contained file (inline CSS, no JavaScript, chart
@@ -55,14 +54,11 @@ def _fmt(value: Optional[float], suffix: str = "", digits: int = 2) -> str:
         return "N/A (source unavailable)" if suffix == "pe" else "N/A"
     return f"{value:,.{digits}f}{suffix}"
 
-
 def _pe_display(summary: SummaryStats) -> str:
     return "N/A (source unavailable)" if summary.pe_trailing is None else f"{summary.pe_trailing:,.2f}"
 
-
 def _signed(value: Optional[float], digits: int = 2) -> str:
     return "N/A" if value is None else f"{value:+.{digits}f}%"
-
 
 def build_chart(frame, summary: SummaryStats, path=config.CHART_PNG) -> str:
     """Render the 3-panel chart (price/SMAs/Bollinger, RSI, MACD); return base64."""
@@ -139,7 +135,6 @@ def _snapshot_rows(summary: SummaryStats) -> str:
     ]
     return "".join(f"<tr><th>{label}</th><td>{value}</td></tr>" for label, value in rows)
 
-
 def _headline_rows(sentiment: SentimentAggregate) -> str:
     rows = []
     for item in sentiment.top_headlines:
@@ -154,7 +149,6 @@ def _headline_rows(sentiment: SentimentAggregate) -> str:
             f"<td>{item.confidence:.2f}</td></tr>"
         )
     return "".join(rows)
-
 
 def build_html(
     summary: SummaryStats,
@@ -289,7 +283,6 @@ def build_markdown(
         "---\n\n"
         f"{DISCLAIMER}\n"
     )
-
 
 def write_report(
     frame,

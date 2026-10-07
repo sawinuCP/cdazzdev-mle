@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'chat-format JSONL builder with exact stratified 120/15/15 split', Date: 2026-10-06
 """Build chat-format JSONL and the exact stratified 120/15/15 split.
 
 Each line is ``{"messages": [system, user, assistant]}``. The gold assistant
@@ -21,11 +20,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src import config  # noqa: E402
 from src.prompts import STUDENT_SYSTEM  # noqa: E402
 
-
 def canonical_json(obj: Dict[str, Any]) -> str:
     """Canonical JSON text: sorted keys, compact separators."""
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
 
 def build_example(record: Dict[str, Any]) -> Dict[str, Any]:
     """One chat-format training example."""
@@ -41,7 +38,6 @@ def build_example(record: Dict[str, Any]) -> Dict[str, Any]:
             "anomaly_class": record["anomaly_class"],
         },
     }
-
 
 def stratified_split(
     records: List[Dict[str, Any]],
@@ -86,13 +82,11 @@ def stratified_split(
         raise ValueError("train split did not fill exactly")
     return splits
 
-
 def write_jsonl(path: Path, records: List[Dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w", encoding="utf-8") as handle:
         for record in records:
             handle.write(json.dumps(record, ensure_ascii=False) + "\n")
-
 
 def main() -> None:
     config.ensure_dirs()
@@ -128,7 +122,6 @@ def main() -> None:
     if len(ids) != len(set(ids)):
         raise SystemExit("[error] leakage detected: a tuple appears in more than one split")
     print("no leakage: every tuple appears in exactly one split")
-
 
 if __name__ == "__main__":
     main()

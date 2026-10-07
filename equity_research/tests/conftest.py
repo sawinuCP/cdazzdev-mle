@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'pytest bootstrap adding the project root to sys.path', Date: 2026-10-06
 """Pytest bootstrap: make ``src`` importable regardless of invocation directory."""
 from __future__ import annotations
 

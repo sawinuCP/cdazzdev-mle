@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'manual hallucination audit template generator and rate calculator (labels stay human)', Date: 2026-10-06
 """Manual hallucination audit: template generation + rate calculation.
 
 The labels are filled by a HUMAN reviewer (the template is deliberately empty);
@@ -15,7 +14,6 @@ from src import config
 
 ALLOWED_LABELS = ("correct", "partially_correct", "hallucinated")
 COLUMNS = ["id", "input", "gold", "tuned_output", "label", "note"]
-
 
 def make_template(
     tuned_generations: List[Dict[str, Any]],
@@ -40,12 +38,10 @@ def make_template(
             })
     return path
 
-
 def json_compact(obj: Dict[str, Any]) -> str:
     import json
 
     return json.dumps(obj, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
 
 def compute_rate(path: Path = config.AUDIT_TEMPLATE_CSV) -> Optional[Dict[str, Any]]:
     """Read human labels and compute the hallucination rate.

@@ -1,5 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'self-contained copy of the indicator functions for the agent tool', Date: 2026-10-06
-# SOURCE: equity_research/src/indicators.py (own code), Lines 18-149
 """Technical indicators computed from first principles — no TA-Lib.
 
 Deliberately copied (not imported) from ``equity_research/src/indicators.py``
@@ -14,15 +12,12 @@ import pandas as pd
 
 from .. import config
 
-
 class InsufficientHistoryError(ValueError):
     """Raised when the price history is too short for the requested indicators."""
-
 
 def sma(close: pd.Series, window: int = config.SMA_SHORT_WINDOW) -> pd.Series:
     """Simple moving average over ``window`` closes (no partial windows)."""
     return close.rolling(window=window, min_periods=window).mean()
-
 
 def rsi(close: pd.Series, period: int = config.RSI_PERIOD) -> pd.Series:
     """RSI with Wilder's smoothing (alpha = 1/period).
@@ -40,7 +35,6 @@ def rsi(close: pd.Series, period: int = config.RSI_PERIOD) -> pd.Series:
     values = values.mask((avg_loss == 0) & (avg_gain > 0), 100.0)
     values = values.mask((avg_loss == 0) & (avg_gain == 0), 50.0)
     return values
-
 
 def macd(close: pd.Series, fast_span: int = config.MACD_FAST_SPAN,
          slow_span: int = config.MACD_SLOW_SPAN,
@@ -62,7 +56,6 @@ def macd(close: pd.Series, fast_span: int = config.MACD_FAST_SPAN,
         index=close.index,
     )
 
-
 def bollinger(close: pd.Series, window: int = config.BB_WINDOW,
               num_std: float = config.BB_NUM_STD) -> pd.DataFrame:
     """Bollinger Bands (population sigma), %B and bandwidth (zero-width guarded)."""
@@ -77,7 +70,6 @@ def bollinger(close: pd.Series, window: int = config.BB_WINDOW,
         {"mid": mid, "upper": upper, "lower": lower, "pct_b": pct_b, "bandwidth": bandwidth},
         index=close.index,
     )
-
 
 def compute_all(close: pd.Series) -> pd.DataFrame:
     """Compute every indicator with a minimum-history guard."""

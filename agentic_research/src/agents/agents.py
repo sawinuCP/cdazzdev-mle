@@ -1,11 +1,9 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'ReAct agent loop: JSON-action protocol, duplicate and iteration guards, replan stamping, whitelist enforcement', Date: 2026-10-06
-"""The autonomous agent loop and the role runners.
+"""The autonomous agent loop and role runners.
 
-The loop is deliberately plain Python with a JSON-action protocol so it works
-on any OpenAI-compatible gateway. Guards: hard step cap, a duplicate-call
-refusal, a runtime whitelist (raised INSIDE the dispatcher and converted into a
-refused observation), and honest replan stamping (LLM-declared or automatic
-after a failed observation). No tool order exists anywhere in this module.
+A plain-Python ReAct loop over a JSON-action protocol works on any
+OpenAI-compatible gateway. Guards: step caps, a duplicate-call refusal, the
+runtime whitelist (refused in the dispatcher) and replan stamping. No tool
+order exists anywhere in this module.
 """
 from __future__ import annotations
 
@@ -33,7 +31,6 @@ ROLE_PROMPTS = {
     "agent_b": prompts.AGENT_B_SYSTEM,
 }
 
-
 class CrossAgentToolAccessError(RuntimeError):
     """Raised inside the dispatcher when an agent reaches outside its whitelist."""
 
@@ -46,14 +43,11 @@ class CrossAgentToolAccessError(RuntimeError):
             f"(allowed: {', '.join(self.allowed)})"
         )
 
-
 def _args_json(args: Dict[str, Any]) -> str:
     return json.dumps(args, sort_keys=True, ensure_ascii=False)
 
-
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
-
 
 class AgentLoop:
     """One observe -> decide -> act loop for a single role."""
@@ -80,7 +74,7 @@ class AgentLoop:
         self._last_failure_summary = ""
         self._repeat_strikes = 0
 
-    # ── prompt assembly ───────────────────────────────────────────────
+    # prompt assembly
     def _tools_block(self) -> str:
         return tools.allowed_tools_block(self.whitelist)
 
@@ -116,7 +110,7 @@ class AgentLoop:
         )
         return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
-    # ── one step ──────────────────────────────────────────────────────
+    # one step
     def _next_action(self) -> Optional[AgentAction]:
         """Ask the LLM for the next JSON action; malformed output -> None."""
         started = time.perf_counter()
@@ -170,7 +164,7 @@ class AgentLoop:
         return {"tool": tool, "args": {}, "digest": f"REFUSED: {error} (hint: {hint})",
                 "ok": False}
 
-    # ── the loop ───────────────────────────────────────────────────────
+    # the loop
     def run(self) -> Dict[str, Any]:
         """Run until finish or the step cap; returns a loop summary."""
         for step in range(1, self.max_steps + 1):
@@ -257,22 +251,19 @@ class AgentLoop:
             "finish_thought": self.finish_thought,
         }
 
-# ── Role runners and composers ────────────────────────────────────────────────
+# Role runners and composers
 def _objective_single(ticker: str) -> str:
     return (f"Analyse the current financial health and market sentiment of {ticker}. "
             "Identify the top three risks to its share price over the next 90 days "
             "and suggest one data-driven hedge strategy.")
 
-
 def _objective_agent_a(ticker: str) -> str:
     return (f"Gather the quantitative picture for {ticker}: daily price/indicator "
             "snapshot and the 90-day annualized volatility.")
 
-
 def _objective_agent_b(ticker: str) -> str:
     return (f"Gather recent headlines and analyst commentary about {ticker} so the "
             "final report can combine them with the quantitative brief.")
-
 
 def _find_tool_result(store: MemoryStore, tool: str, agent: Optional[str] = None
                       ) -> Optional[Dict[str, Any]]:
@@ -281,14 +272,12 @@ def _find_tool_result(store: MemoryStore, tool: str, agent: Optional[str] = None
                if entry["tool"] == tool and (agent is None or entry["agent"] == agent)]
     return matches[-1] if matches else None
 
-
 def _finite_or_none(value: Any) -> Optional[float]:
     try:
         as_float = float(value)
     except (TypeError, ValueError):
         return None
     return None if as_float != as_float else as_float  # NaN check without numpy
-
 
 def compute_one_sigma(store: MemoryStore) -> Optional[Dict[str, Any]]:
     """Python-computed 1-sigma 90-day price band: price x ann_vol x sqrt(90/252).
@@ -435,7 +424,6 @@ def compose_report(ticker: str, store: MemoryStore, llm: LLMClient,
                         "fallback from tool data", exc)
         return _fallback_report(ticker, store, one_sigma, brief)
 
-
 def run_single_agent(ticker: str, llm: LLMClient, trace: TraceLogger,
                      store: MemoryStore) -> Dict[str, Any]:
     """Single-agent mode: one loop with all five tools, then composition."""
@@ -454,13 +442,11 @@ def run_single_agent(ticker: str, llm: LLMClient, trace: TraceLogger,
     summary["one_sigma"] = one_sigma
     return summary
 
-
 def _headlines_from_store(store: MemoryStore) -> List[Dict[str, Any]]:
     entry = _find_tool_result(store, config.TOOL_GET_NEWS)
     if not entry:
         return []
     return (entry["result"].get("data") or {}).get("headlines", [])
-
 
 def _commentary_from_store(store: MemoryStore) -> List[Dict[str, Any]]:
     entry = _find_tool_result(store, config.TOOL_WEB_SEARCH)
@@ -468,8 +454,7 @@ def _commentary_from_store(store: MemoryStore) -> List[Dict[str, Any]]:
         return []
     return (entry["result"].get("data") or {}).get("results", [])
 
-
-# ── Two-agent role runners ────────────────────────────────────────────────────
+# Two-agent role runners
 def build_brief_v1(ticker: str, store: MemoryStore, analyst_notes: str = "",
                    sources: Optional[List[str]] = None) -> AgentBrief:
     """Build the brief in Python from ToolResult data (LLM writes notes only)."""
@@ -501,7 +486,6 @@ def build_brief_v1(ticker: str, store: MemoryStore, analyst_notes: str = "",
     store.briefs["brief_v1"] = brief.model_dump()
     return brief
 
-
 def run_agent_a(ticker: str, llm: LLMClient, trace: TraceLogger,
                 store: MemoryStore) -> Tuple[AgentBrief, Dict[str, Any]]:
     """Agent A gathers the quantitative picture; builds brief v1 (no sentiment)."""
@@ -516,7 +500,6 @@ def run_agent_a(ticker: str, llm: LLMClient, trace: TraceLogger,
     summary["brief"] = brief
     return brief, summary
 
-
 def detect_gaps(brief: AgentBrief) -> List[str]:
     """Python checklist: the gaps are real by construction.
 
@@ -530,7 +513,6 @@ def detect_gaps(brief: AgentBrief) -> List[str]:
     if brief.volatility.annualized_30d is None:
         gaps.append("no short-window (30-day) volatility for comparison")
     return gaps
-
 
 def build_critique_request(brief: AgentBrief, headlines: List[Dict[str, Any]],
                            gaps: List[str], llm: LLMClient, trace: TraceLogger
@@ -561,7 +543,6 @@ def build_critique_request(brief: AgentBrief, headlines: List[Dict[str, Any]],
     if not request.payload.get("headlines"):
         request = request.model_copy(update={"payload": {"headlines": titles}})
     return request
-
 
 def run_agent_a_respond(ticker: str, critique: CritiqueRequest, llm: LLMClient,
                         trace: TraceLogger, store: MemoryStore
@@ -617,7 +598,6 @@ def run_agent_a_respond(ticker: str, critique: CritiqueRequest, llm: LLMClient,
     store.briefs["brief_v2"] = base.model_dump()
     return response, base
 
-
 def _phrase_answer(question: str, data: Dict[str, Any]) -> str:
     """Template phrasing from tool data (no numbers invented)."""
     if "overall_score" in data:
@@ -628,7 +608,6 @@ def _phrase_answer(question: str, data: Dict[str, Any]) -> str:
         return (f"30-day annualized volatility is {data.get('annualized')} "
                 f"({data.get('band')} band), daily {data.get('daily')}.")
     return "answered from tool data"
-
 
 def run_agent_b_gather(ticker: str, brief: AgentBrief, llm: LLMClient,
                        trace: TraceLogger, store: MemoryStore
@@ -648,7 +627,6 @@ def run_agent_b_gather(ticker: str, brief: AgentBrief, llm: LLMClient,
               ok=True)
     return headlines, commentary, summary
 
-
 def run_agent_b_final(ticker: str, brief: AgentBrief, headlines: List[Dict[str, Any]],
                       commentary: List[Dict[str, Any]], llm: LLMClient,
                       trace: TraceLogger, store: MemoryStore) -> ResearchReport:
@@ -658,7 +636,6 @@ def run_agent_b_final(ticker: str, brief: AgentBrief, headlines: List[Dict[str, 
                             brief=brief)
     store.report = report.model_dump()
     return report
-
 
 def demo_blocked_access(ticker: str, llm: LLMClient, trace: TraceLogger,
                         store: MemoryStore) -> Dict[str, Any]:

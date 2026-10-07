@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'human-readable trace renderer with per-agent summary counts', Date: 2026-10-06
 """Presentation layer: renders the JSONL trace as a readable narrative.
 
 This is the ONLY module that formats output for humans; everything inside
@@ -13,7 +12,6 @@ from typing import Any, Dict, List, Optional
 
 DEFAULT_TRACE = Path(__file__).resolve().parents[1] / "logs" / "agent_trace.jsonl"
 
-
 def load_trace(path: Optional[Path] = None,
                run_id: Optional[str] = None) -> List[Dict[str, Any]]:
     """Read the trace file (optionally filtered to one run)."""
@@ -27,7 +25,6 @@ def load_trace(path: Optional[Path] = None,
             entries.append(entry)
     return entries
 
-
 def _as_dict(value: Any) -> Dict[str, Any]:
     """Trace args fields are JSON strings; coerce them for rendering."""
     if isinstance(value, dict):
@@ -38,7 +35,6 @@ def _as_dict(value: Any) -> Dict[str, Any]:
         except json.JSONDecodeError:
             return {}
     return {}
-
 
 def render_narrative(entries: List[Dict[str, Any]]) -> str:
     """Readable step-by-step narrative of one run."""
@@ -69,7 +65,6 @@ def render_narrative(entries: List[Dict[str, Any]]) -> str:
             lines.append(f"[{agent}] decide{hit}: {entry.get('tool')}")
     return "\n".join(lines)
 
-
 def summarize(entries: List[Dict[str, Any]]) -> str:
     """Summary counts: tool calls per agent, replans, critiques, memory hits."""
     tools_per_agent = dict(Counter(
@@ -88,7 +83,6 @@ def summarize(entries: List[Dict[str, Any]]) -> str:
         f"memory events: {memory} | cache events: {cache}",
         f"  failed tool calls: {failures}",
     ])
-
 
 def render_file(path: Optional[Path] = None,
                 run_id: Optional[str] = None) -> str:

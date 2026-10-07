@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'acceptance-gate verification with mocked teacher plus resumability check', Date: 2026-10-06
 """Offline verification for the acceptance gates and resumability (mocked teacher)."""
 from __future__ import annotations
 
@@ -48,7 +47,6 @@ GOLD = {
     "confidence": 0.92,
 }
 
-
 def _gate(gold_overrides=None, feed=None, accepted=None, family_counts=None, target_total=150):
     input_feed = AnomalyInput.model_validate(feed or FEED)
     gold = AnomalyAssessment.model_validate({**GOLD, **(gold_overrides or {})})
@@ -56,26 +54,21 @@ def _gate(gold_overrides=None, feed=None, accepted=None, family_counts=None, tar
         input_feed, gold, TUPLE, accepted or [], family_counts or {}, target_total,
     )
 
-
 def test_gate_accepts_a_good_sample():
     ok, reason = _gate()
     assert ok and reason == "ok"
-
 
 def test_gate_rejects_wrong_class():
     ok, reason = _gate({"anomaly_class": "weather_disruption"})
     assert not ok and "class" in reason
 
-
 def test_gate_rejects_severity_outside_band():
     ok, reason = _gate({"severity": 2})  # band for "severe" is 3-4
     assert not ok and "severity" in reason
 
-
 def test_gate_rejects_unknown_evidence_field():
     ok, reason = _gate({"evidence_fields": ["hurricane_magnitude"]})
     assert not ok and "outside the input schema" in reason
-
 
 def test_empty_evidence_for_anomaly_is_rejected_by_the_schema():
     """The schema itself blocks the empty-evidence case before the gate runs.
@@ -85,11 +78,9 @@ def test_empty_evidence_for_anomaly_is_rejected_by_the_schema():
     with pytest.raises(ValidationError):
         _gate({"evidence_fields": []})
 
-
 def test_gate_rejects_near_duplicate():
     ok, reason = _gate(accepted=[json.dumps(FEED, sort_keys=True)])
     assert not ok and "near-duplicate" in reason
-
 
 def test_gate_enforces_family_share_cap():
     # with a 150-sample target the per-family cap is 150 * 0.15 = 22.5 samples
@@ -112,7 +103,6 @@ class FakeTeacher:
             raise item
         return model_cls.model_validate(item)
 
-
 def _runner(tmp_path, payloads):
     from src.llm_client import LLMSettings
 
@@ -120,7 +110,6 @@ def _runner(tmp_path, payloads):
     fake.settings = LLMSettings("http://fake", "key", "fake-model", 1.0, 0.7)
     runner = GenerationRunner(client=fake, out_path=tmp_path / "raw.jsonl")
     return runner, fake
-
 
 def test_runner_generates_and_stops_at_target(tmp_path):
     runner, fake = _runner(tmp_path, [dict(input_feed=FEED, gold_assessment=GOLD)])
@@ -130,7 +119,6 @@ def test_runner_generates_and_stops_at_target(tmp_path):
     assert fake.calls == ["0|port_logistics_congestion|electronics|Asia-Pacific|severe|1"]
     lines = (tmp_path / "raw.jsonl").read_text(encoding="utf-8").strip().splitlines()
     assert len(lines) == 1 and json.loads(lines[0])["tuple_id"] == TUPLE.tuple_id
-
 
 def test_runner_is_resumable_and_skips_completed_tuples(tmp_path):
     raw_path = tmp_path / "raw.jsonl"
@@ -181,7 +169,6 @@ def test_runner_is_resumable_and_skips_completed_tuples(tmp_path):
     assert summary["accepted"] == 2
     assert fake.calls == ["0|" + other.tuple_id + "|1"]  # the completed tuple was skipped
 
-
 def test_runner_retries_after_failure_with_new_salt(tmp_path):
     runner, fake = _runner(tmp_path, [
         RuntimeError("transient gateway error"),
@@ -191,7 +178,6 @@ def test_runner_retries_after_failure_with_new_salt(tmp_path):
     assert summary["accepted"] == 1
     assert len(fake.calls) == 2
     assert fake.calls[0].endswith("|1") and fake.calls[1].endswith("|2")
-
 
 def test_runner_abandons_after_max_attempts(tmp_path):
     runner, fake = _runner(tmp_path, [RuntimeError("down")] * 6)

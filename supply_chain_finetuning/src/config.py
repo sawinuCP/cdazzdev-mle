@@ -1,10 +1,9 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'central config: taxonomy, scenario matrix, gates, thresholds, paths', Date: 2026-10-06
 """Central configuration — every tunable value lives here (no magic numbers)."""
 from __future__ import annotations
 
 from pathlib import Path
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
+# Paths
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_ROOT / "data"
 DIVERSITY_DIR = DATA_DIR / "diversity"
@@ -25,14 +24,12 @@ JUDGE_USAGE_CSV = LOGS_DIR / "judge_usage.csv"
 TEACHER_CACHE_JSON = OUTPUTS_DIR / ".teacher_cache.json"
 JUDGE_CACHE_JSON = OUTPUTS_DIR / ".judge_cache.json"
 
-
 def ensure_dirs() -> None:
     """Create data/output/log directories on demand (idempotent)."""
     for directory in (DATA_DIR, DIVERSITY_DIR, OUTPUTS_DIR, LOGS_DIR):
         directory.mkdir(parents=True, exist_ok=True)
 
-
-# ── Domain taxonomy ───────────────────────────────────────────────────────────
+# Domain taxonomy
 ANOMALY_CLASSES = (
     "demand_spike",
     "demand_collapse",
@@ -63,7 +60,7 @@ SEVERITY_LEVELS = ("mild", "severe", "critical")
 SEVERITY_BANDS = {"mild": (1, 2), "severe": (3, 4), "critical": (4, 5)}
 CONTROL_SEVERITY = 1
 
-# ── Sampling and acceptance gates ─────────────────────────────────────────────
+# Sampling and acceptance gates
 MATRIX_EXPECTED_SIZE = 540          # 12 families x 5 categories x 3 regions x 3 levels
 SAMPLE_TARGET = 150                 # final accepted dataset size
 SAMPLE_OVERGENERATE = 170           # tuples attempted to survive rejects (~14/family)
@@ -78,7 +75,7 @@ INPUT_KEYS = (
     "weather_event", "labor_document_note", "unit_cost_vs_last_quarter_pct", "notes",
 )
 
-# ── Output contract ───────────────────────────────────────────────────────────
+# Output contract
 ROOT_CAUSE_SENTENCE_RANGE = (2, 4)
 ACTIONS_COUNT_RANGE = (3, 5)
 SENTENCE_SPLIT_REGEX = r"(?<=[.!?])\s+(?=[A-Z])"
@@ -87,10 +84,10 @@ SEVERITY_MIN, SEVERITY_MAX = 1, 5
 RAG_CONFIDENCE_THRESHOLD = 0.55     # stretch-goal retrieval trigger (disabled by default)
 ENABLE_RAG = False
 
-# ── Split ─────────────────────────────────────────────────────────────────────
+# Split
 SPLIT_SIZES = {"train": 120, "valid": 15, "test": 15}   # exactly 80/10/10 of 150
 
-# ── Student models (fine-tuning) ──────────────────────────────────────────────
+# Student models (fine-tuning)
 STUDENT_MODEL_ID = "microsoft/Phi-3-mini-4k-instruct"
 FALLBACK_STUDENT_MODEL_ID = "Qwen/Qwen2.5-1.5B-Instruct"   # Apache-2.0, if templates fail
 PHI3_TARGET_MODULES = ("qkv_proj", "o_proj", "gate_up_proj", "down_proj")
@@ -99,7 +96,7 @@ FALLBACK_TARGET_MODULES = ("q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", 
 MAX_SEQ_LENGTH = 1024
 TOKEN_FIT_SHARE = 0.95           # >= 95% of full chat examples must fit MAX_SEQ_LENGTH
 
-# ── LLM access (teacher + judge) ──────────────────────────────────────────────
+# LLM access (teacher + judge)
 ENV_TEACHER_BASE_URL = "TEACHER_BASE_URL"
 ENV_TEACHER_API_KEY = "TEACHER_API_KEY"
 ENV_TEACHER_MODEL = "TEACHER_MODEL"
@@ -118,7 +115,7 @@ LLM_MAX_ATTEMPTS = 3
 LLM_BACKOFF_BASE_S = 1.5
 RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
 
-# ── Ground guard: claims that must not appear without a backing input field ───
+# Ground guard: claims that must not appear without a backing input field
 BLANK_FIELD_VALUES = ("", "none", "n/a", "na", "none reported", "no alerts", "-")
 GROUND_GUARD_RULES = (
     {
@@ -131,7 +128,7 @@ GROUND_GUARD_RULES = (
     },
 )
 
-# ── Diversity report ──────────────────────────────────────────────────────────
+# Diversity report
 STOPWORDS = frozenset(
     "a an and are as at be by for from has have in is it its of on or that the this to "
     "was were will with due been being than then their there these those which while "

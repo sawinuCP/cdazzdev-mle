@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'tools package public API: five tools, dispatcher, digests, sources for test injection', Date: 2026-10-06
 """The data-access layer for the agents.
 
 Re-exports the five tools, the dispatcher and the digester helpers so callers

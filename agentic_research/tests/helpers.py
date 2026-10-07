@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'shared offline fakes: scripted LLM and synthetic OHLCV frames', Date: 2026-10-06
 """Shared offline fakes for the agentic test suite (no network, no real LLM)."""
 from __future__ import annotations
 
@@ -9,7 +8,6 @@ import numpy as np
 import pandas as pd
 
 from src.runtime.llm_client import LLMSettings
-
 
 class FakeLLM:
     """Scripted LLM: pops one item per complete_json call.
@@ -33,7 +31,6 @@ class FakeLLM:
             item = json.loads(item)
         return model_cls.model_validate(item)
 
-
 def synthetic_frame(periods: int = 300, seed: int = 11) -> pd.DataFrame:
     """Deterministic OHLCV frame ending today (runtime dates, never literals)."""
     index = pd.bdate_range(end=pd.Timestamp.today().normalize(), periods=periods)
@@ -49,7 +46,6 @@ def synthetic_frame(periods: int = 300, seed: int = 11) -> pd.DataFrame:
         },
         index=index,
     )
-
 
 def ok_response(payload: dict) -> SimpleNamespace:
     """Shape an OpenAI-style response around one content string."""

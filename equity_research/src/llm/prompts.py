@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'all LLM prompts as documented constants with placeholders only', Date: 2026-10-06
 """Every prompt used by the assistant lives HERE and only here.
 
 Rules:

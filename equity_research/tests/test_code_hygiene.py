@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'code hygiene checks: no date literals, prompts isolated, no key patterns', Date: 2026-10-06
 """Code hygiene checks: date literals, prompt isolation, credential patterns."""
 from __future__ import annotations
 
@@ -22,11 +21,9 @@ KEY_PATTERNS = (
     re.compile(r"hf_[A-Za-z0-9]{10,}"),
 )
 
-
 def _source_files():
     """Every python file under src/, including the layered subpackages."""
     return sorted(SRC_DIR.rglob("*.py"))
-
 
 def test_no_date_literals_outside_comment_lines():
     """Date literals in logic would break reproducibility; comments may cite dates."""
@@ -38,7 +35,6 @@ def test_no_date_literals_outside_comment_lines():
                 f"{path.name}:{line_no} contains a date literal: {line.strip()!r}"
             )
 
-
 def test_no_system_prompt_text_outside_prompts_module():
     """All prompt text lives only in src/llm/prompts.py (grep-proof separation)."""
     for path in _source_files():
@@ -46,7 +42,6 @@ def test_no_system_prompt_text_outside_prompts_module():
             continue
         text = path.read_text(encoding="utf-8")
         assert "You are" not in text, f"{path.name} contains prompt text"
-
 
 def test_every_prompt_template_formats_against_real_payloads():
     """Each template must format against the real payload models without KeyError."""
@@ -80,7 +75,6 @@ def test_every_prompt_template_formats_against_real_payloads():
     assert '"overall_score"' in rendered  # the bundle JSON made it into the prompt
     assert prompts.REPAIR_SUFFIX.format(error="boom", schema='{"type": "object"}')
 
-
 def test_no_credential_patterns_anywhere_in_the_project():
     """Scan every tracked text file; generated output dirs are excluded on purpose
     (they may legitimately quote model text), and .env is gitignored."""
@@ -99,7 +93,6 @@ def test_no_credential_patterns_anywhere_in_the_project():
             for pattern in KEY_PATTERNS:
                 match = pattern.search(text)
                 assert match is None, f"credential-like pattern {match!r} found in {path}"
-
 
 def test_forbidden_vocabulary_is_absent_from_the_project():
     """The project describes itself purely as an equity research tool.

@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'all prompt text as documented constants: teacher, student baseline, judge', Date: 2026-10-06
 """Every prompt used in this project lives HERE and only here.
 
 Three families of prompts:
@@ -12,7 +11,7 @@ Templates use ``str.format`` placeholders. A hygiene test keeps prompt text out
 of every other module.
 """
 
-# ── Teacher ───────────────────────────────────────────────────────────────────
+# Teacher
 # Intent: one call per scenario tuple produces a realistic, internally
 # consistent feed plus a fully grounded assessment.
 # Forbidden: inventing events/fields absent from the feed; numbers that
@@ -76,7 +75,7 @@ TEACHER_USER = """Scenario tuple:
 {anomaly_instruction}
 Generate the feed and its gold assessment as one JSON object now."""
 
-# ── Student (system turn for SFT AND the base-model baseline prompt) ─────────
+# Student (system turn for SFT AND the base-model baseline prompt)
 # Intent: fixed problem definition so base and fine-tuned arms get identical
 # instructions; the fine-tuning teaches the output distribution.
 STUDENT_SYSTEM = """You are a supply-chain anomaly analyst. You receive one event feed as a
@@ -104,7 +103,7 @@ Rules:
 
 Return ONLY the JSON object."""
 
-# ── Judge (blinded scorer) ────────────────────────────────────────────────────
+# Judge (blinded scorer)
 # Intent: score ONE model output against the INPUT only. The judge is never
 # shown the gold answer or the other arm, and arm labels are hidden upstream.
 # Forbidden: referencing a "correct answer", asking for the gold, text outside JSON.

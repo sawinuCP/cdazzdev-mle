@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'first-principles SMA/RSI/MACD/Bollinger with guards and tests-friendly purity', Date: 2026-10-06
 """Technical indicators computed from first principles — no TA-Lib, no indicator library.
 
 Why pandas ``rolling``/``ewm`` still counts as "first principles": the requirement bans
@@ -24,10 +23,8 @@ import pandas as pd
 
 from .. import config
 
-
 class InsufficientHistoryError(ValueError):
     """Raised when the price history is too short for the requested indicators."""
-
 
 def sma(close: pd.Series, window: int = config.SMA_SHORT_WINDOW) -> pd.Series:
     """Simple moving average: mean of the last ``window`` closes.
@@ -38,7 +35,6 @@ def sma(close: pd.Series, window: int = config.SMA_SHORT_WINDOW) -> pd.Series:
     if window <= 0:
         raise ValueError("window must be a positive integer")
     return close.rolling(window=window, min_periods=window).mean()
-
 
 def rsi(close: pd.Series, period: int = config.RSI_PERIOD) -> pd.Series:
     """Relative Strength Index with Wilder's smoothing (alpha = 1/period).
@@ -100,7 +96,6 @@ def macd(
         index=close.index,
     )
 
-
 def bollinger(
     close: pd.Series,
     window: int = config.BB_WINDOW,
@@ -125,7 +120,6 @@ def bollinger(
         {"mid": mid, "upper": upper, "lower": lower, "pct_b": pct_b, "bandwidth": bandwidth},
         index=close.index,
     )
-
 
 def compute_all(close: pd.Series) -> pd.DataFrame:
     """Compute every indicator and return one aligned DataFrame.

@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'code hygiene checks: prompt isolation, credential patterns, unwanted vocabulary', Date: 2026-10-06
 """Code hygiene checks for the fine-tuning project (static, no network)."""
 from __future__ import annotations
 
@@ -16,7 +15,6 @@ SCAN_SUFFIXES = {".py", ".md", ".txt", ".example", ".json", ".csv"}
 SKIP_DIRS = {".git", "__pycache__", ".pytest_cache", ".ipynb_checkpoints",
              "outputs", "data", "logs", ".venv"}
 
-
 def _iter_project_files():
     for path in PROJECT_ROOT.rglob("*"):
         if not path.is_file() or path.suffix not in SCAN_SUFFIXES:
@@ -24,7 +22,6 @@ def _iter_project_files():
         if any(part in SKIP_DIRS for part in path.parts):
             continue
         yield path
-
 
 def test_no_prompt_text_outside_the_prompts_module():
     """All prompt text lives only in src/prompts.py (needle assembled to stay clean)."""
@@ -37,14 +34,12 @@ def test_no_prompt_text_outside_the_prompts_module():
         text = path.read_text(encoding="utf-8", errors="ignore")
         assert needle not in text, f"prompt text found in {path}"
 
-
 def test_no_credential_patterns_anywhere():
     for path in _iter_project_files():
         text = path.read_text(encoding="utf-8", errors="ignore")
         for pattern in KEY_PATTERNS:
             match = pattern.search(text)
             assert match is None, f"credential-like pattern {match!r} found in {path}"
-
 
 def test_unwanted_vocabulary_is_absent():
     """The project is described purely as supply-chain anomaly fine-tuning.

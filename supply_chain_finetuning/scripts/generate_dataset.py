@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'teacher dataset generation with seven acceptance gates, resumable, usage-logged', Date: 2026-10-06
 """Teacher-based dataset generation with acceptance gates (resumable).
 
 Gates (a rejected sample is regenerated, up to ``MAX_ATTEMPTS_PER_TUPLE``):
@@ -37,7 +36,6 @@ from src.scenario_matrix import ScenarioTuple, sample_tuples  # noqa: E402
 
 _LOGGER = logging.getLogger("supply_chain.generate")
 
-
 def build_teacher_messages(tup: ScenarioTuple) -> List[Dict[str, str]]:
     """Render the teacher prompt for one scenario tuple."""
     anomaly_instruction = (
@@ -63,7 +61,6 @@ def build_teacher_messages(tup: ScenarioTuple) -> List[Dict[str, str]]:
             ),
         },
     ]
-
 
 def gate_check(
     input_feed: AnomalyInput,
@@ -102,7 +99,6 @@ def gate_check(
     if family_count + 1 > config.MAX_FAMILY_SHARE * target_total:
         return False, "gate: family share cap reached"
     return True, "ok"
-
 
 def load_completed(raw_path: Path) -> Dict[str, int]:
     """Count already-accepted samples per tuple id (restart safety)."""
@@ -254,12 +250,10 @@ class GenerationRunner:
             "per_family": per_family,
         }
 
-
 def write_teacher_prompt(path: Path) -> None:
     """Persist the teacher system prompt verbatim (provenance requirement)."""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(prompts.TEACHER_SYSTEM, encoding="utf-8")
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Teacher-based dataset generation")
@@ -328,7 +322,6 @@ def main() -> None:
             f"{len(summary['abandoned'])} tuples abandoned - re-run to resume."
         )
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

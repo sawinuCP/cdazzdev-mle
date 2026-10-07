@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'offline schema verification: severity bands, taxonomy enum, sentence counts, consistency rule', Date: 2026-10-06
 """Offline verification for the Pydantic models (no network)."""
 from __future__ import annotations
 
@@ -24,7 +23,6 @@ BASE_INPUT = {
     "notes": "Steady week with no disruptions reported.",
 }
 
-
 def _assessment(**overrides):
     payload = {
         "is_anomaly": False,
@@ -42,12 +40,10 @@ def _assessment(**overrides):
     payload.update(overrides)
     return AnomalyAssessment.model_validate(payload)
 
-
 def test_valid_normal_assessment_passes():
     assessment = _assessment()
     assert assessment.anomaly_class == config.NONE_CLASS
     assert assessment.is_anomaly is False
-
 
 def test_severity_bounds():
     with pytest.raises(ValidationError):
@@ -55,19 +51,16 @@ def test_severity_bounds():
     with pytest.raises(ValidationError):
         _assessment(severity=6)
 
-
 def test_confidence_bounds():
     with pytest.raises(ValidationError):
         _assessment(confidence=1.4)
     with pytest.raises(ValidationError):
         _assessment(confidence=-0.2)
 
-
 def test_taxonomy_enum_enforced():
     with pytest.raises(ValidationError):
         _assessment(is_anomaly=True, anomaly_class="planet_alignment", severity=3,
                     evidence_fields=["port_congestion_index"])
-
 
 def test_root_cause_sentence_range():
     two = "First sentence here. Second sentence follows it."
@@ -78,13 +71,11 @@ def test_root_cause_sentence_range():
     with pytest.raises(ValidationError):
         _assessment(root_cause=five)
 
-
 def test_actions_count_range():
     with pytest.raises(ValidationError):
         _assessment(corrective_actions=["Only one action."])
     with pytest.raises(ValidationError):
         _assessment(corrective_actions=[f"Action number {i}" for i in range(10)])
-
 
 def test_consistency_between_flag_and_class():
     with pytest.raises(ValidationError):
@@ -92,18 +83,15 @@ def test_consistency_between_flag_and_class():
     with pytest.raises(ValidationError):
         _assessment(is_anomaly=False, anomaly_class="labor_strike")
 
-
 def test_anomaly_requires_evidence():
     with pytest.raises(ValidationError):
         _assessment(is_anomaly=True, anomaly_class="demand_spike", severity=4)
-
 
 def test_input_numeric_coercion_and_unknown_category():
     coerced = AnomalyInput.model_validate({**BASE_INPUT, "transit_days_observed": "9"})
     assert coerced.transit_days_observed == 9.0
     with pytest.raises(ValidationError):
         AnomalyInput.model_validate({**BASE_INPUT, "product_category": "spaceships"})
-
 
 def test_sentence_counter_edge_cases():
     assert count_sentences("Revenue grew 1.5 times. The U.S. plant slowed. Costs held.") == 3

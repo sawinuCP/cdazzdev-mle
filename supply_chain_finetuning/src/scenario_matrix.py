@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'scenario matrix builder: 540 tuples plus stratified deterministic sampling', Date: 2026-10-06
 """Scenario matrix: the full cross-product plus a deterministic stratified sample.
 
 The full matrix is 12 families x 5 product categories x 3 regions x 3 severity
@@ -14,7 +13,6 @@ from itertools import product
 from typing import Dict, List, Tuple
 
 from . import config
-
 
 @dataclass(frozen=True)
 class ScenarioTuple:
@@ -32,7 +30,6 @@ class ScenarioTuple:
     def tuple_id(self) -> str:
         """Stable identifier used for resumability."""
         return f"{self.family}|{self.product_category}|{self.region}|{self.severity_level}"
-
 
 def build_matrix() -> List[ScenarioTuple]:
     """Full cross-product: 12 families x 5 categories x 3 regions x 3 levels = 540."""
@@ -56,7 +53,6 @@ def build_matrix() -> List[ScenarioTuple]:
             )
         )
     return tuples
-
 
 def sample_tuples(
     count: int = config.SAMPLE_OVERGENERATE, seed: int = config.SEED

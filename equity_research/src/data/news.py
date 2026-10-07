@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'news retrieval ladder yfinance both shapes plus RSS fallbacks with dedupe', Date: 2026-10-06
 """Headline retrieval ladder: yfinance -> Yahoo Finance RSS -> Google News RSS.
 
 Every network path is individually wrapped: a failing source is logged and
@@ -21,11 +20,9 @@ from .. import config
 
 _LOGGER = logging.getLogger(__name__)
 
-
 def _normalize_title_key(title: str) -> str:
     """Normalization key for dedupe: unescaped, lowercased, alphanumeric only."""
     return re.sub(r"[^a-z0-9]", "", html.unescape(title or "").lower())
-
 
 def _normalize_pubdate(raw: str) -> str:
     """Best-effort publication date -> ISO date string ("" when unknown)."""
@@ -40,7 +37,6 @@ def _normalize_pubdate(raw: str) -> str:
         return datetime.fromisoformat(raw.replace("Z", "+00:00")).date().isoformat()
     except (TypeError, ValueError):
         return raw
-
 
 def _normalize_yf_item(item: Dict[str, Any]) -> Dict[str, str] | None:
     """Normalize either yfinance news shape.
@@ -98,7 +94,6 @@ def _fetch_yfinance(ticker: str) -> List[Dict[str, str]]:
             normalized.append(entry)
     return normalized
 
-
 def _parse_rss(xml_text: str, default_source: str) -> List[Dict[str, str]]:
     """Parse an RSS 2.0 document into normalized headline dicts."""
     items: List[Dict[str, str]] = []
@@ -117,7 +112,6 @@ def _parse_rss(xml_text: str, default_source: str) -> List[Dict[str, str]]:
         )
     return items
 
-
 def _http_get(url: str) -> str:
     """Single guarded HTTP GET with the configured timeout and user agent."""
     response = requests.get(
@@ -128,16 +122,13 @@ def _http_get(url: str) -> str:
     response.raise_for_status()
     return response.text
 
-
 def _fetch_yahoo_rss(ticker: str) -> List[Dict[str, str]]:
     """Source 2: Yahoo Finance per-ticker headline RSS feed."""
     return _parse_rss(_http_get(config.YAHOO_RSS_URL.format(ticker=ticker)), "Yahoo Finance RSS")
 
-
 def _fetch_google_rss(ticker: str) -> List[Dict[str, str]]:
     """Source 3: Google News search RSS (last resort)."""
     return _parse_rss(_http_get(config.GOOGLE_RSS_URL.format(ticker=ticker)), "Google News")
-
 
 def fetch_headlines(
     ticker: str,

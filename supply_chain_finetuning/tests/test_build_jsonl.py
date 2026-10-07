@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'JSONL builder verification: roles, exact split sizes, stratification, no leakage', Date: 2026-10-06
 """Offline verification for the JSONL builder (synthetic records, no network)."""
 from __future__ import annotations
 
@@ -10,7 +9,6 @@ from src import config
 from scripts.build_jsonl import build_example, canonical_json, stratified_split
 
 FAMILIES = list(config.SCENARIO_FAMILIES)  # 12
-
 
 def _synthetic_record(index: int) -> dict:
     family = FAMILIES[index % len(FAMILIES)]
@@ -55,15 +53,12 @@ def _synthetic_record(index: int) -> dict:
         },
     }
 
-
 def _records(count: int = 150) -> list:
     return [_synthetic_record(i) for i in range(count)]
-
 
 def test_canonical_json_sorts_keys_and_compacts():
     text = canonical_json({"b": 1, "a": 2})
     assert text == '{"a":2,"b":1}'
-
 
 def test_build_example_has_three_roles_with_canonical_content():
     example = build_example(_synthetic_record(0))
@@ -77,13 +72,11 @@ def test_build_example_has_three_roles_with_canonical_content():
         json.loads(assistant_content), sort_keys=True, separators=(",", ":")
     )
 
-
 def test_split_sizes_are_exact():
     records = _records(150)
     examples = [build_example(record) for record in records]
     splits = stratified_split(examples)
     assert {name: len(items) for name, items in splits.items()} == config.SPLIT_SIZES
-
 
 def test_split_is_stratified_by_family():
     records = _records(150)
@@ -92,7 +85,6 @@ def test_split_is_stratified_by_family():
     for split_name, items in splits.items():
         families = {example["meta"]["family"] for example in items}
         assert families == set(FAMILIES), f"{split_name} missed families"
-
 
 def test_no_leakage_between_splits():
     records = _records(150)
@@ -103,7 +95,6 @@ def test_no_leakage_between_splits():
         for example in splits[split_name]:
             seen.append(example["meta"]["tuple_id"])
     assert len(seen) == len(set(seen)) == 150
-
 
 def test_split_rejects_wrong_record_count():
     with pytest.raises(ValueError):

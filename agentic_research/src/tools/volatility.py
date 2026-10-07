@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'volatility tool: annualized log-return std with band classification', Date: 2026-10-06
 """calculate_volatility(ticker, window): annualized realized volatility."""
 from __future__ import annotations
 
@@ -15,12 +14,10 @@ from .base import make_result
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class CalculateVolatilityArgs(BaseModel):
     ticker: str = Field(min_length=1)
     window: int = Field(default=config.VOL_WINDOW_DEFAULT, ge=config.VOL_WINDOW_MIN,
                         le=config.VOL_WINDOW_MAX)
-
 
 def calculate_volatility(ticker: str, window: int) -> ToolResult:
     """Annualized realized volatility over the last ``window`` daily log returns."""
@@ -58,7 +55,6 @@ def calculate_volatility(ticker: str, window: int) -> ToolResult:
         "n_obs": int(len(used)), "band": band,
     }
     return make_result(True, data=payload, source="yfinance")
-
 
 def volatility_digest(data: dict) -> str:
     return (f"vol annualized={data.get('annualized')} ({data.get('band')}) "

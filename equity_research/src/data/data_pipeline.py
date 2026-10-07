@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'market data pipeline with fetch ladder, cleaning, summary dictionary', Date: 2026-10-06
 """Market data pipeline: fetch, clean, and build the summary dictionary.
 
 Failure philosophy: every problem becomes either a ``MarketDataError`` (which
@@ -23,10 +22,8 @@ _LOGGER = logging.getLogger(__name__)
 
 _OHLC_COLUMNS = ("Open", "High", "Low", "Close")
 
-
 class MarketDataError(RuntimeError):
     """Raised when price history cannot be fetched or fails the sanity checks."""
-
 
 def _fetch_once(ticker: str, period: str) -> pd.DataFrame:
     """One yfinance call. auto_adjust=False is deliberate: unadjusted closes
@@ -36,7 +33,6 @@ def _fetch_once(ticker: str, period: str) -> pd.DataFrame:
 
     frame = yf.Ticker(ticker).history(period=period, interval="1d", auto_adjust=False)
     return frame if isinstance(frame, pd.DataFrame) else pd.DataFrame()
-
 
 def fetch_history(
     ticker: str, period: str = config.LOOKBACK_PERIOD
@@ -72,7 +68,6 @@ def fetch_history(
         f"could not fetch price history for {ticker} (last problem: {last_problem})"
     )
 
-
 def _clean(frame: pd.DataFrame, ticker: str, period: str) -> Tuple[pd.DataFrame, Dict[str, Any]]:
     """Enforce the history floor, drop null OHLC rows, and record data quality."""
     if not isinstance(frame.index, pd.DatetimeIndex):
@@ -103,7 +98,6 @@ def _clean(frame: pd.DataFrame, ticker: str, period: str) -> Tuple[pd.DataFrame,
     )
     return frame, quality
 
-
 def fetch_info(ticker: str) -> Dict[str, Any]:
     """Ticker reference data (P/E etc.); failures degrade to an empty dict."""
     import yfinance as yf
@@ -114,7 +108,6 @@ def fetch_info(ticker: str) -> Dict[str, Any]:
     except Exception as exc:  # noqa: BLE001 - reference data is optional
         _LOGGER.warning("ticker info unavailable for %s: %s", ticker, exc)
         return {}
-
 
 def load_cached_summary() -> Optional["SummaryStats"]:
     """Load the previous summary (flagged stale) for the offline fallback path."""
@@ -127,7 +120,6 @@ def load_cached_summary() -> Optional["SummaryStats"]:
         return stats
     except (OSError, ValidationError, ValueError):
         return None
-
 
 def json_loads(text: str) -> Dict[str, Any]:
     """Tiny indirection so tests/monkeypatching stay simple."""
@@ -218,7 +210,6 @@ def build_summary(
         generated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
     )
 
-
 def _finite(value: Any) -> Optional[float]:
     """NaN/inf -> None (indicator warm-up must not leak into the summary)."""
     try:
@@ -227,16 +218,13 @@ def _finite(value: Any) -> Optional[float]:
         return None
     return None if pd.isna(as_float) else as_float
 
-
 def _round(value: Optional[float], digits: int = 4) -> Optional[float]:
     return None if value is None else round(value, digits)
-
 
 def _stance(value: Optional[float], reference: Optional[float]) -> str:
     if value is None or reference is None:
         return "unknown"
     return "above" if value > reference else "below"
-
 
 def _rsi_note(rsi_value: Optional[float]) -> str:
     if rsi_value is None:
@@ -274,7 +262,6 @@ def _ytd_return(frame: pd.DataFrame, price: Optional[float]) -> Tuple[Optional[f
     if prior_close in (None, 0.0):
         return None, note
     return (price / prior_close - 1.0) * 100.0, note
-
 
 def _momentum_vote(
     price: Optional[float], snapshot: "IndicatorSnapshot"

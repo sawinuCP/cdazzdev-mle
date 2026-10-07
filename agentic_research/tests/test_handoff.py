@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'handoff verification: lossless JSON round trip and Python-built numeric fields', Date: 2026-10-06
 """Handoff verification: typed brief, lossless round trip, tool-built numbers."""
 from __future__ import annotations
 
@@ -10,7 +9,6 @@ from src.runtime.memory import MemoryStore
 from src.schemas import AgentBrief, ToolResult
 from src.runtime.tracing import TraceLogger
 from helpers import FakeLLM, synthetic_frame
-
 
 def _seed_store_with_tool_data(store, frame):
     """Emulate what Agent A's loop stored after its two successful tools."""
@@ -40,14 +38,12 @@ def _seed_store_with_tool_data(store, frame):
                           {"ticker": "NVDA", "window": 90},
                           ToolResult(ok=True, data=vol_payload, source="yfinance").model_dump())
 
-
 def test_brief_round_trip_is_lossless(tmp_path):
     store = MemoryStore()
     _seed_store_with_tool_data(store, synthetic_frame())
     brief = build_brief_v1("NVDA", store, analyst_notes="trend intact")
     restored = AgentBrief.model_validate_json(brief.model_dump_json())
     assert restored == brief  # lossless typed handoff
-
 
 def test_brief_numbers_come_from_tool_data_not_the_llm(tmp_path):
     store = MemoryStore()

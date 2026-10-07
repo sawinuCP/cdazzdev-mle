@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'sentiment tool: one validated LLM call per headline with neutral sentinel and confidence-weighted aggregation', Date: 2026-10-06
 """llm_sentiment(headlines): per-headline LLM classification + aggregation."""
 from __future__ import annotations
 
@@ -12,10 +11,8 @@ from ..prompts import SENTIMENT_SYSTEM, SENTIMENT_USER
 from ..schemas import HeadlineSentiment, ToolResult
 from .base import make_result
 
-
 class LlmSentimentArgs(BaseModel):
     headlines: List[str] = Field(min_length=1)
-
 
 def llm_sentiment(headlines: List[str], llm: LLMClient, ticker: str = "") -> ToolResult:
     """Score each headline separately, then aggregate with confidence weighting."""
@@ -59,7 +56,6 @@ def llm_sentiment(headlines: List[str], llm: LLMClient, ticker: str = "") -> Too
         "estimates": sum(1 for item in items if item.get("estimate")),
     }
     return make_result(True, data=payload, source="llm")
-
 
 def sentiment_digest(data: Dict[str, Any]) -> str:
     return (f"sentiment={data.get('label')} ({data.get('overall_score'):+.3f}) "

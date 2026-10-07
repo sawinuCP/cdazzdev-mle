@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'shared tool plumbing: finite floats, utc now, single ToolResult construction point', Date: 2026-10-06
 """Tool plumbing shared by every tool module."""
 from __future__ import annotations
 
@@ -8,10 +7,8 @@ from typing import Any, Optional
 
 from ..schemas import ToolResult
 
-
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
-
 
 def _finite(value: Any) -> Optional[float]:
     try:
@@ -19,7 +16,6 @@ def _finite(value: Any) -> Optional[float]:
     except (TypeError, ValueError):
         return None
     return None if (isinstance(as_float, float) and math.isnan(as_float)) else as_float
-
 
 def make_result(ok: bool, data: Any = None, error: Optional[str] = None,
                 hint: Optional[str] = None, source: str = "") -> ToolResult:

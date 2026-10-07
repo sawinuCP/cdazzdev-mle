@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'offline LLM client verification: empty-content budget retry, cache hit, failure logging', Date: 2026-10-06
 """Offline verification for the LLM client (fake SDK, no network)."""
 from __future__ import annotations
 
@@ -17,14 +16,12 @@ from src.llm.llm_client import (
 )
 from src.schemas import HeadlineSentiment
 
-
 class FakeStatusError(Exception):
     """Transport-style error carrying a status code, like the openai SDK."""
 
     def __init__(self, status_code: int):
         self.status_code = status_code
         super().__init__(f"HTTP {status_code}")
-
 
 class FakeCompletions:
     def __init__(self, script):
@@ -43,7 +40,6 @@ class FakeCompletions:
             choices=[SimpleNamespace(message=SimpleNamespace(content=content))]
         )
 
-
 def _make_client(monkeypatch, tmp_path, script, use_cache=False):
     completions = FakeCompletions(script)
     fake_openai = lambda **kwargs: SimpleNamespace(  # noqa: E731
@@ -56,12 +52,10 @@ def _make_client(monkeypatch, tmp_path, script, use_cache=False):
     client = LLMClient(settings=settings, use_cache=use_cache, cache_path=tmp_path / "cache.json")
     return client, completions
 
-
 _MESSAGES = [
     {"role": "system", "content": "system text"},
     {"role": "user", "content": "user text"},
 ]
-
 
 def test_empty_content_retries_with_doubled_budget(monkeypatch, tmp_path):
     payload = json.dumps(
@@ -74,7 +68,6 @@ def test_empty_content_retries_with_doubled_budget(monkeypatch, tmp_path):
         llm_client.config.LLM_MIN_MAX_TOKENS,
         llm_client.config.LLM_MIN_MAX_TOKENS * 2,
     ]
-
 
 def test_cache_hit_avoids_second_call(monkeypatch, tmp_path):
     client, completions = _make_client(monkeypatch, tmp_path, [], use_cache=True)
@@ -89,7 +82,6 @@ def test_cache_hit_avoids_second_call(monkeypatch, tmp_path):
     assert completions.calls == []          # the network was never touched
     assert client.cache_hits == 1
 
-
 def test_transport_errors_retry_with_backoff_then_succeed(monkeypatch, tmp_path):
     payload = json.dumps(
         {"headline": "h", "sentiment": "negative", "confidence": 0.4, "brief_reason": "r"}
@@ -100,7 +92,6 @@ def test_transport_errors_retry_with_backoff_then_succeed(monkeypatch, tmp_path)
     assert value.sentiment == "negative"
     assert len(completions.calls) == 3
 
-
 def test_persistent_failure_raises_and_is_logged(monkeypatch, tmp_path):
     script = [FakeStatusError(503)] * 6
     client, completions = _make_client(monkeypatch, tmp_path, script)
@@ -108,7 +99,6 @@ def test_persistent_failure_raises_and_is_logged(monkeypatch, tmp_path):
         client.chat_json(_MESSAGES, HeadlineSentiment)
     assert len(completions.calls) == llm_client.config.LLM_MAX_ATTEMPTS
     assert any(rec["stage"] == "chat.completions" for rec in failure_records())
-
 
 def test_repair_retry_carries_error_and_schema(monkeypatch, tmp_path):
     payload = json.dumps(
@@ -122,7 +112,6 @@ def test_repair_retry_carries_error_and_schema(monkeypatch, tmp_path):
     assert "Validation error" in repair_message
     assert '"headline"' in repair_message  # the schema is appended for the repair
 
-
 def test_fenced_json_is_stripped(monkeypatch, tmp_path):
     fenced = "```json\n" + json.dumps(
         {"headline": "h", "sentiment": "neutral", "confidence": 0.1, "brief_reason": "r"}
@@ -130,7 +119,6 @@ def test_fenced_json_is_stripped(monkeypatch, tmp_path):
     client, _ = _make_client(monkeypatch, tmp_path, [fenced])
     value = client.chat_json(_MESSAGES, HeadlineSentiment)
     assert value.sentiment == "neutral"
-
 
 def test_missing_api_key_raises_clear_configuration_error(monkeypatch):
     monkeypatch.delenv("LLM_API_KEY", raising=False)

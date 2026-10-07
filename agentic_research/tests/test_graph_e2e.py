@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'graph end-to-end verification with mocked tools and scripted LLM plus crash-injection', Date: 2026-10-06
 """Graph end-to-end verification (mocked data sources, scripted LLM)."""
 from __future__ import annotations
 
@@ -10,7 +9,6 @@ from src import config
 from src.agents.graph import run_research
 from src.schemas import ResearchReport
 from helpers import FakeLLM, synthetic_frame
-
 
 @pytest.fixture(autouse=True)
 def mock_sources(monkeypatch, tmp_path):
@@ -32,7 +30,6 @@ def mock_sources(monkeypatch, tmp_path):
                         lambda q, max_results: [
                             {"title": "Commentary", "body": "b", "href": "http://x"}])
     return frame
-
 
 def _scripted_llm() -> FakeLLM:
     """Payload order: A loop, B loop, critique writer, sentiment, composer."""
@@ -99,7 +96,6 @@ def test_full_two_agent_run(tmp_path):
                       "output", "duration_ms", "ok", "error"):
             assert field in entry
 
-
 def test_fault_injection_stamps_replan(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "FAULT_INJECT", {config.TOOL_GET_NEWS: "empty"})
     llm = _scripted_llm()
@@ -108,7 +104,6 @@ def test_fault_injection_stamps_replan(tmp_path, monkeypatch):
     replans = [e for e in result["trace"].entries if e["kind"] == "replan"]
     assert replans, "expected at least one visible replan under fault injection"
     assert any("failed" in e["output"] or "changed" in e["output"] for e in replans)
-
 
 def test_crash_injection_returns_degraded(tmp_path, monkeypatch):
     import src.agents.graph as graph_module

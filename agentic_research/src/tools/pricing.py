@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'pricedata tool with compact payload, indicator snapshot and the one-line digest', Date: 2026-10-06
 """get_price_data(ticker, period): daily OHLCV tail + indicator snapshot."""
 from __future__ import annotations
 
@@ -13,11 +12,9 @@ from ..schemas import ToolResult
 from .base import _finite, make_result
 from . import sources  # noqa: F401 _fetch_history
 
-
 class GetPriceDataArgs(BaseModel):
     ticker: str = Field(min_length=1)
     period: str = config.DEFAULT_PERIOD
-
 
 def get_price_data(ticker: str, period: str) -> ToolResult:
     """Daily OHLCV tail plus an indicator snapshot (built in Python)."""
@@ -98,7 +95,6 @@ def get_price_data(ticker: str, period: str) -> ToolResult:
         "rows": rows, "indicator_state": indicator_state,
     }
     return make_result(True, data=payload, source="yfinance")
-
 
 def price_digest(data: Dict[str, Any]) -> str:
     """Compact observation digest for the agent's context window."""

@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'shared LLM client: env-prefix settings, backoff, JSON parse, cache, usage CSV log', Date: 2026-10-06
 """OpenAI-compatible LLM client shared by the teacher and the judge.
 
 - Configuration comes from environment variables with a configurable prefix
@@ -33,18 +32,14 @@ TModel = TypeVar("TModel", bound=BaseModel)
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class LLMConfigurationError(RuntimeError):
     """Missing/invalid LLM environment configuration."""
-
 
 class LLMError(RuntimeError):
     """LLM call failed after retries (transport, budget, or empty content)."""
 
-
 class LLMValidationError(LLMError):
     """Response could not be parsed/validated even after the repair attempt."""
-
 
 def load_env() -> None:
     """Load a ``.env`` walking upwards from the current directory."""
@@ -55,7 +50,6 @@ def load_env() -> None:
     except ImportError:  # pragma: no cover - python-dotenv is a declared dependency
         pass
 
-
 @dataclass(frozen=True)
 class LLMSettings:
     base_url: str
@@ -63,7 +57,6 @@ class LLMSettings:
     model: str
     timeout_s: float
     temperature: float
-
 
 def settings_from_env(
     prefix: str,
@@ -86,7 +79,6 @@ def settings_from_env(
         timeout_s=float(os.environ.get(f"{prefix}_TIMEOUT_S", 120.0) or 120.0),
         temperature=temperature,
     )
-
 
 def client_from_env(
     prefix: str, temperature: float, cache_path: Path, usage_log_path: Path,
@@ -134,7 +126,7 @@ class LLMClient:
             )
         return self._client
 
-    # ── plumbing ──────────────────────────────────────────────────────
+    # plumbing
     def _cache_key(self, messages: List[Dict[str, str]], salt: str = "", max_tokens: int = 0) -> str:
         normalized = json.dumps(messages, sort_keys=True, ensure_ascii=False)
         # The token budget is part of the key: responses produced under a smaller
@@ -260,7 +252,7 @@ class LLMClient:
             raise LLMError("model returned empty content even with a doubled token budget")
         raise LLMError(f"LLM call failed after retries: {last_error}")
 
-    # ── JSON path ─────────────────────────────────────────────────────
+    # JSON path
     @staticmethod
     def _strip_fences(content: str) -> str:
         """Remove markdown fences and keep the outermost JSON object."""

@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'public entry points: single-agent mode, memory follow-up, CLI', Date: 2026-10-06
 """Public entry points and the CLI.
 
 - ``run_single_agent_mode(ticker)``: one agent with all five tools.
@@ -26,12 +25,10 @@ from .runtime.tracing import TraceLogger
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class MemoryAnswer(BaseModel):
     """Validated reply of the memory answerer."""
 
     answer: str
-
 
 def _session() -> MemoryStore:
     # read the memory module attribute DYNAMICALLY: a by-value import would
@@ -63,7 +60,6 @@ def run_single_agent_mode(ticker: str, use_cache: bool = True) -> Dict[str, Any]
     return {"report": report.model_dump(), "run_id": trace.run_id,
             "trace": trace, "store": store}
 
-
 def answer_from_memory(question: str, llm: Optional[LLMClient] = None,
                        use_cache: bool = True) -> Dict[str, Any]:
     """Answer a follow-up from the session record ONLY (no tool calls)."""
@@ -88,12 +84,10 @@ def answer_from_memory(question: str, llm: Optional[LLMClient] = None,
             "counter_unchanged": store.tool_call_count == counter_before,
             "trace": trace}
 
-
 class MemoryAnswer(BaseModel):
     """Validated reply of the memory answerer."""
 
     answer: str
-
 
 def _report_markdown(report: ResearchReport) -> str:
     risks = "\n".join(
@@ -112,7 +106,6 @@ def _report_markdown(report: ResearchReport) -> str:
         f"Cost note: {report.hedge.cost_note}\n\n"
         f"---\n\n{report.disclaimer}\n"
     )
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Agentic financial research system")
@@ -147,7 +140,6 @@ def main() -> None:
     except Exception as exc:  # noqa: BLE001 - friendly CLI failure
         print(f"[error] {type(exc).__name__}: {exc}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()

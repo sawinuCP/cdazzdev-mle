@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'pydantic schemas: ToolResult, AgentAction, brief, critique, research report with validators', Date: 2026-10-06
 """Pydantic models for the multi-agent research system.
 
 Two honesty guarantees are enforced here mechanically:
@@ -13,7 +12,6 @@ from typing import Any, Dict, List, Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
-
 class ToolResult(BaseModel):
     """Uniform tool outcome: tools NEVER raise, they return ok=False instead."""
 
@@ -24,7 +22,6 @@ class ToolResult(BaseModel):
     source: str = ""
     fetched_at: str = ""
 
-
 class AgentAction(BaseModel):
     """One step of the JSON-action protocol returned by the LLM."""
 
@@ -33,14 +30,12 @@ class AgentAction(BaseModel):
     args: Dict[str, Any] = Field(default_factory=dict)
     replan_reason: Optional[str] = None
 
-
 class HeadlineSentiment(BaseModel):
     headline: str
     sentiment: Literal["positive", "negative", "neutral"]
     confidence: float = Field(ge=0.0, le=1.0)
     brief_reason: str = ""
     estimate: bool = False  # True when a sentinel replaced a failed LLM item
-
 
 class SentimentBlock(BaseModel):
     """Aggregated per-headline sentiment (built in Python from tool data)."""
@@ -50,7 +45,6 @@ class SentimentBlock(BaseModel):
     counts: Dict[str, int]
     items: List[HeadlineSentiment]
 
-
 class PriceLevel(BaseModel):
     current: Optional[float] = None
     previous_close: Optional[float] = None
@@ -58,13 +52,11 @@ class PriceLevel(BaseModel):
     week52_low: Optional[float] = None
     ytd_pct: Optional[float] = None
 
-
 class VolatilityState(BaseModel):
     annualized_90d: Optional[float] = None
     annualized_30d: Optional[float] = None
     daily: Optional[float] = None
     band: str = "unknown"
-
 
 class IndicatorState(BaseModel):
     sma50_stance: str = "unknown"   # above | below | unknown
@@ -73,7 +65,6 @@ class IndicatorState(BaseModel):
     macd_hist: Optional[float] = None
     macd_fresh_cross: bool = False
     pct_b: Optional[float] = None
-
 
 class AgentBrief(BaseModel):
     """Typed handoff from the quantitative agent to the research writer.
@@ -92,11 +83,9 @@ class AgentBrief(BaseModel):
     analyst_notes: str = ""
     sources: List[str] = Field(default_factory=list)
 
-
 class CritiqueQuestion(BaseModel):
     question_id: str
     text: str
-
 
 class CritiqueRequest(BaseModel):
     """The research writer's structured request back to the data analyst."""
@@ -105,23 +94,19 @@ class CritiqueRequest(BaseModel):
     questions: List[CritiqueQuestion] = Field(min_length=1, max_length=2)
     payload: Dict[str, Any] = Field(default_factory=dict)  # headlines attached
 
-
 class ClarificationAnswer(BaseModel):
     question_id: str
     response: str
     data: Dict[str, Any]
 
-
 class ClarificationResponse(BaseModel):
     request_id: str
     answers: List[ClarificationAnswer] = Field(min_length=1)
-
 
 class Evidence(BaseModel):
     source_tool: str
     key_datum: str
     url: Optional[str] = None
-
 
 class Risk(BaseModel):
     title: str
@@ -129,14 +114,12 @@ class Risk(BaseModel):
     likelihood: int = Field(ge=1, le=5)
     evidence: List[Evidence] = Field(min_length=1)
 
-
 class HedgePlan(BaseModel):
     strategy: str
     instruments: List[str] = Field(min_length=1)
     rationale: str
     data_basis: List[str] = Field(min_length=2)
     cost_note: str = ""
-
 
 class ReportMeta(BaseModel):
     run_id: str
@@ -147,7 +130,6 @@ class ReportMeta(BaseModel):
     memory_hits: int
     degraded: bool = False
 
-
 class ComposedReport(BaseModel):
     """What the LLM composes (no meta: run counters are Python-owned)."""
 
@@ -157,11 +139,9 @@ class ComposedReport(BaseModel):
     hedge: HedgePlan
     meta_note: str = ""
 
-
 class FinancialHealthSummary(BaseModel):
     narrative: str
     evidence_refs: List[str] = Field(min_length=1)
-
 
 class ResearchReport(BaseModel):
     """The validated final artifact."""

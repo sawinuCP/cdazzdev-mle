@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'ROUGE-L, BERTScore, programmatic checks and ground guard for base vs tuned comparison', Date: 2026-10-06
 """Metrics: ROUGE-L, BERTScore, and deterministic programmatic checks.
 
 All metrics run on the SAME held-out test set for both arms, on the
@@ -17,11 +16,9 @@ from src.schemas import AnomalyAssessment
 
 _SCORER = rouge_scorer.RougeScorer(["rougeL"], use_stemmer=True)
 
-
 def rouge_l(prediction: str, reference: str) -> float:
     """ROUGE-L F-measure (stemmed) between two canonical texts."""
     return _SCORER.score(reference, prediction)["rougeL"].fmeasure
-
 
 def bertscore_f1(predictions: List[str], references: List[str]) -> List[float]:
     """BERTScore F1 (default English model). Imported lazily: heavy download."""
@@ -29,7 +26,6 @@ def bertscore_f1(predictions: List[str], references: List[str]) -> List[float]:
 
     _, _, f1 = score(predictions, references, lang="en", verbose=False)
     return [round(value, 4) for value in f1.tolist()]
-
 
 def ground_guard_violations(assessment: Dict[str, Any], input_feed: Dict[str, Any]) -> List[str]:
     """Claims in the root cause that the input cannot back (hallucination signal).
@@ -48,7 +44,6 @@ def ground_guard_violations(assessment: Dict[str, Any], input_feed: Dict[str, An
                     violations.append(f"{keyword!r} claimed but {rule['field']} is empty")
                     break
     return violations
-
 
 def programmatic_check(
     normalized: Dict[str, Any], gold: Dict[str, Any], input_feed: Dict[str, Any]
@@ -146,17 +141,14 @@ def evaluate_arm(
         },
     }
 
-
 def _pct(flags: List[bool]) -> float:
     return round(100.0 * sum(1 for flag in flags if flag) / len(flags), 1) if flags else 0.0
-
 
 def _canonical_gold(gold: Dict[str, Any]) -> str:
     from evaluation.normalize import canonicalize  # sibling package, avoids a cycle
 
     assessment = AnomalyAssessment.model_validate(gold)
     return canonicalize(assessment.model_dump())
-
 
 def canonicalize(obj: Dict[str, Any]) -> str:
     """Re-export of the shared canonicalizer (kept here for import ergonomics)."""

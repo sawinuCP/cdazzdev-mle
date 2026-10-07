@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'pydantic models: anomaly input, assessment output with mechanical validators, teacher wrapper', Date: 2026-10-06
 """Pydantic models for the supply-chain anomaly pipeline.
 
 The output contract is enforced mechanically: taxonomy enum, severity band,
@@ -14,17 +13,14 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 from . import config
 
-
 def count_sentences(text: str) -> int:
     """Capital-letter look-ahead split so decimals ("1.5") and "U.S." don't inflate."""
     parts = re.split(config.SENTENCE_SPLIT_REGEX, (text or "").strip())
     return len([p for p in parts if p.strip()])
 
-
 def _to_float(value: Any) -> float:
     """Coerce ints/numeric strings to float (feeds sometimes quote numbers)."""
     return float(value)
-
 
 class AnomalyInput(BaseModel):
     """One warehouse/SKU-day event feed (the model's input)."""
@@ -61,7 +57,6 @@ class AnomalyInput(BaseModel):
         if v not in config.PRODUCT_CATEGORIES:
             raise ValueError(f"unknown product_category {v!r}")
         return v
-
 
 class AnomalyAssessment(BaseModel):
     """The structured output the student model must produce."""
@@ -111,23 +106,8 @@ class AnomalyAssessment(BaseModel):
             raise ValueError("an anomalous assessment must cite at least one evidence field")
         return self
 
-
 class TeacherResponse(BaseModel):
     """One teacher call returns the feed and its grounded gold assessment."""
 
-    input_feed: AnomalyInput
-    gold_assessment: AnomalyAssessment
-
-
-class TeacherSample(BaseModel):
-    """An accepted (scenario tuple, feed, gold) triple as stored in raw.jsonl."""
-
-    tuple_id: str
-    family: str
-    anomaly_class: str
-    product_category: str
-    region: str
-    severity_level: str
-    severity: Tuple[int, int]  # the allowed band for this tuple
     input_feed: AnomalyInput
     gold_assessment: AnomalyAssessment

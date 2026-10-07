@@ -49,4 +49,5 @@ python -m src.main --ticker NVDA            # same day again = cache HIT (no too
   notebook re-runs to **identical output with zero API spend**.
 - No credentials exist anywhere in this repository; the LLM client is provider-agnostic and
   configured purely through environment variables (see `equity_research/.env.example`).
-- `CITATIONS.md` documents all AI tool usage; `REFLECTION.md` summarises decisions and limitations.
+- AI assistance is disclosed in `CITATIONS.md` (every file that used an assistant or an
+  adapted source, per the submission's disclosure policy).

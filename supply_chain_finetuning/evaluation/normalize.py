@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'JSON extraction, schema validation and canonicalization for model outputs', Date: 2026-10-06
 """Normalize raw model outputs into canonical, comparable JSON text.
 
 Unparseable outputs are preserved verbatim and marked ``schema_valid=False``
@@ -14,7 +13,6 @@ from pydantic import ValidationError
 
 from src.schemas import AnomalyAssessment
 
-
 @dataclass
 class NormalizedOutput:
     """Result of normalization for one raw model response."""
@@ -24,7 +22,6 @@ class NormalizedOutput:
     canonical_text: Optional[str]
     schema_valid: bool
     error: str = ""
-
 
 def extract_json(text: str) -> Dict[str, Any]:
     """Pull the outermost JSON object out of possibly fenced/prose-wrapped text."""
@@ -38,7 +35,6 @@ def extract_json(text: str) -> Dict[str, Any]:
         raise json.JSONDecodeError("no JSON object found", cleaned, 0)
     return json.loads(cleaned[start:end + 1])
 
-
 def canonicalize(obj: Dict[str, Any]) -> str:
     """Canonical text: sorted keys, compact separators, floats rounded."""
     def clean(value: Any) -> Any:
@@ -51,7 +47,6 @@ def canonicalize(obj: Dict[str, Any]) -> str:
         return value
 
     return json.dumps(clean(obj), sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
 
 def normalize_output(raw: str) -> NormalizedOutput:
     """Extract, validate against the assessment schema, and canonicalize."""

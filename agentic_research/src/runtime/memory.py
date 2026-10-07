@@ -1,12 +1,9 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'session memory store plus persistent per-ticker-per-day cache with corruption guard', Date: 2026-10-06
-"""Memory: short-term session store and a persistent per-ticker/per-day cache.
+"""Memory: a session store plus a persistent per-ticker/per-day cache.
 
-The session store holds every ToolResult, the briefs, the clarification and the
-final report; answering a follow-up from the store must never trigger tool
-calls, so the store also owns the tool-call counter. The persistent cache is
-keyed ``{TICKER}_{YYYY-MM-DD}.json`` (date from the clock, never a literal) and
-is guarded against corruption: a parse failure invalidates the file and the
-next run proceeds fully.
+The session store holds tool results, briefs and the report and owns the
+tool-call counter; follow-ups answered from the store never trigger tools.
+The cache file is `{TICKER}_{YYYY-MM-DD}.json`; a corrupted file is
+invalidated and the next run proceeds fully.
 """
 from __future__ import annotations
 
@@ -21,7 +18,6 @@ from .. import config
 _LOGGER = logging.getLogger(__name__)
 
 CACHE_SCHEMA_VERSION = 1
-
 
 class MemoryStore:
     """Session-scoped memory for one research run."""
@@ -52,17 +48,14 @@ class MemoryStore:
             "report": self.report,
         }
 
-
 # The most recent session (used by the public answer_from_memory entry point).
 LAST_SESSION: Optional[MemoryStore] = None
-
 
 def cache_path_for(ticker: str, cache_dir: Path = config.CACHE_DIR,
                    day: Optional[date] = None) -> Path:
     """``cache/{TICKER}_{YYYY-MM-DD}.json`` — the date comes from the clock."""
     day = day or date.today()
     return Path(cache_dir) / f"{ticker.upper()}_{day.isoformat()}.json"
-
 
 def save_cache(payload: Dict[str, Any], ticker: str,
                cache_dir: Path = config.CACHE_DIR) -> Path:
@@ -73,7 +66,6 @@ def save_cache(payload: Dict[str, Any], ticker: str,
     path.write_text(json.dumps(document, indent=1, ensure_ascii=False, default=str), encoding="utf-8")
     _LOGGER.info("cache saved: %s", path.name)
     return path
-
 
 def load_cache(ticker: str, cache_dir: Path = config.CACHE_DIR) -> tuple[Optional[Dict[str, Any]], Optional[str]]:
     """Load today's cache for the ticker.

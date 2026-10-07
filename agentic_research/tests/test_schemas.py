@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'research report schema verification: three risks, evidence requirements, hedge data basis', Date: 2026-10-06
 """ResearchReport validator verification."""
 from __future__ import annotations
 
@@ -8,7 +7,6 @@ from pydantic import ValidationError
 from src.schemas import (
     Evidence, FinancialHealthSummary, HedgePlan, ReportMeta, ResearchReport, Risk,
 )
-
 
 def _report(**overrides):
     payload = {
@@ -35,17 +33,14 @@ def _report(**overrides):
     payload.update(overrides)
     return ResearchReport.model_validate(payload)
 
-
 def test_valid_report_passes():
     report = _report()
     assert len(report.risks) == 3 and report.meta.degraded is False
-
 
 def test_risk_count_enforced():
     risks = _report().risks
     with pytest.raises(ValidationError):
         _report(risks=risks[:2])
-
 
 def test_every_risk_needs_evidence():
     risky = _report()
@@ -53,13 +48,11 @@ def test_every_risk_needs_evidence():
     with pytest.raises(ValidationError):
         ResearchReport.model_validate(risky.model_dump())
 
-
 def test_hedge_data_basis_needs_two():
     with pytest.raises(ValidationError):
         _report(hedge={"strategy": "s", "instruments": ["put"],
                        "rationale": "r", "data_basis": ["only one"],
                        "cost_note": "c"})
-
 
 def test_likelihood_bounds():
     with pytest.raises(ValidationError):

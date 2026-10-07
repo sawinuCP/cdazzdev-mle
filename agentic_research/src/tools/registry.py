@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'tool registry: arg models, dispatch, digests, signature rendering', Date: 2026-10-06
 """Registry and dispatcher: the single place tools get routed and digested."""
 from __future__ import annotations
 
@@ -36,7 +35,6 @@ _DIGESTERS: Dict[str, Callable[[Dict[str, Any]], str]] = {
     config.TOOL_WEB_SEARCH: websearch.search_digest,
 }
 
-
 def tool_signature(name: str) -> str:
     """One-line signature used in the agent prompts."""
     signatures = {
@@ -48,11 +46,9 @@ def tool_signature(name: str) -> str:
     }
     return signatures.get(name, name)
 
-
 def allowed_tools_block(whitelist) -> str:
     """Render the allowed tools (with signatures) for an agent prompt."""
     return "\n".join(f"- {tool_signature(name)}" for name in whitelist)
-
 
 def dispatch(name: str, args: Dict[str, Any], llm: Optional[LLMClient],
              ticker: str = "") -> ToolResult:
@@ -83,7 +79,6 @@ def dispatch(name: str, args: Dict[str, Any], llm: Optional[LLMClient],
     if name == config.TOOL_WEB_SEARCH:
         return runner(validated.query)
     return base.make_result(False, error="unroutable tool", source="dispatcher")
-
 
 def digest_for(name: str, result: ToolResult) -> str:
     """One-line observation digest; prefixed with the failure when not ok."""

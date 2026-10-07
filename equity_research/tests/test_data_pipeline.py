@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'offline pipeline verification: NaN injection, YTD definition, P/E, fetch ladder', Date: 2026-10-06
 """Offline verification for the data pipeline (mocked yfinance, no network)."""
 from __future__ import annotations
 
@@ -10,7 +9,6 @@ import pandas as pd
 import pytest
 
 from src.data import data_pipeline
-
 
 def _synthetic_frame(periods: int = 800, seed: int = 11) -> pd.DataFrame:
     """Deterministic OHLCV frame ending today (runtime dates, never literals)."""
@@ -28,7 +26,6 @@ def _synthetic_frame(periods: int = 800, seed: int = 11) -> pd.DataFrame:
         index=index,
     )
 
-
 def _quality(frame: pd.DataFrame) -> dict:
     return {
         "ticker": "NVDA", "period": "3y", "bars": int(len(frame)),
@@ -37,7 +34,6 @@ def _quality(frame: pd.DataFrame) -> dict:
         "last_date": frame.index[-1].date().isoformat(),
         "span_days": int((frame.index[-1] - frame.index[0]).days),
     }
-
 
 def test_build_summary_populates_every_block():
     frame = _synthetic_frame()
@@ -70,7 +66,6 @@ def test_nan_injection_still_yields_valid_summary():
     assert stats.current_price is not None
     assert stats.indicators.sma_50 is not None
 
-
 def test_ytd_uses_previous_year_close():
     frame = _synthetic_frame()
     stats = data_pipeline.build_summary("NVDA", frame, _quality(frame), {})
@@ -82,18 +77,15 @@ def test_ytd_uses_previous_year_close():
     assert stats.ytd_return_pct == pytest.approx(expected, abs=1e-3)  # 4-decimal rounding
     assert stats.ytd_note == ""
 
-
 def test_pe_missing_renders_as_none():
     frame = _synthetic_frame()
     stats = data_pipeline.build_summary("NVDA", frame, _quality(frame), {})
     assert stats.pe_trailing is None  # report layer renders "N/A (source unavailable)"
 
-
 def test_short_history_raises_market_data_error():
     frame = _synthetic_frame(periods=100)
     with pytest.raises(data_pipeline.MarketDataError):
         data_pipeline._clean(frame, "NVDA", "3y")
-
 
 def _patched_fetch(monkeypatch, outcomes):
     calls = []
@@ -108,7 +100,6 @@ def _patched_fetch(monkeypatch, outcomes):
     monkeypatch.setattr(data_pipeline, "_fetch_once", fake_fetch)
     return calls
 
-
 def test_fetch_ladder_falls_back_to_shorter_period(monkeypatch):
     good = _synthetic_frame()
     calls = _patched_fetch(monkeypatch, [None, None, None, good])  # 3 misses, fallback hit
@@ -118,13 +109,11 @@ def test_fetch_ladder_falls_back_to_shorter_period(monkeypatch):
     assert calls[-1] == data_pipeline.config.FALLBACK_PERIOD
     assert len(frame) == len(good)
 
-
 def test_fetch_ladder_exhaustion_raises(monkeypatch):
     _patched_fetch(monkeypatch, [None] * 8)
     monkeypatch.setattr(data_pipeline.time, "sleep", lambda *_: None)
     with pytest.raises(data_pipeline.MarketDataError):
         data_pipeline.fetch_history("NVDA")
-
 
 def test_fetch_info_failure_degrades_to_empty(monkeypatch):
     class ExplodingTicker:
@@ -134,7 +123,6 @@ def test_fetch_info_failure_degrades_to_empty(monkeypatch):
     monkeypatch.setitem(sys.modules, "yfinance", ModuleType("yfinance"))
     sys.modules["yfinance"].Ticker = ExplodingTicker  # type: ignore[attr-defined]
     assert data_pipeline.fetch_info("NVDA") == {}
-
 
 def test_cached_summary_loader_flags_stale(tmp_path, monkeypatch):
     frame = _synthetic_frame()

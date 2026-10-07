@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'trace logger appending every tool/llm/memory/cache/replan event to JSONL', Date: 2026-10-06
 """Observability: one JSON line per event, written immediately.
 
 ``TraceLogger`` wraps every tool call and records LLM, memory, cache, replan
@@ -24,7 +23,6 @@ _EVENT_FIELDS = (
     "ts_utc", "run_id", "kind", "agent", "tool", "args",
     "output", "duration_ms", "ok", "error", "cache_hit",
 )
-
 
 class TraceLogger:
     """Thread-safe JSONL trace writer."""
@@ -75,15 +73,12 @@ class TraceLogger:
                      duration_ms=duration_ms, ok=False, error=f"{type(exc).__name__}: {exc}")
             raise
 
-
 def _truncate_text(value: Any, limit: int = config.TRACE_OUTPUT_MAX_CHARS) -> str:
     text = value if isinstance(value, str) else json.dumps(value, ensure_ascii=False, default=str)
     return text[:limit]
 
-
 def _truncate_json(value: Any, limit: int = config.TRACE_OUTPUT_MAX_CHARS) -> str:
     return _truncate_text(value, limit)
-
 
 def _digest(result: Any) -> str:
     """Compact digest of a ToolResult for the trace output field."""

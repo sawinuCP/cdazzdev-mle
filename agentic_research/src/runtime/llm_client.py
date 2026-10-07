@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'OpenAI-compatible client: retry, JSON repair, response cache, cache-hit flag', Date: 2026-10-06
 """OpenAI-compatible LLM client for the agents.
 
 - Config only from environment (``LLM_BASE_URL/_API_KEY/_MODEL/_TIMEOUT_S``).
@@ -29,18 +28,14 @@ TModel = TypeVar("TModel", bound=BaseModel)
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class LLMConfigurationError(RuntimeError):
     """Missing/invalid LLM environment configuration."""
-
 
 class LLMError(RuntimeError):
     """LLM call failed after retries (transport, budget, or empty content)."""
 
-
 class LLMValidationError(LLMError):
     """Response could not be parsed/validated even after the repair attempt."""
-
 
 def load_env() -> None:
     """Load a ``.env`` walking upwards from the current directory."""
@@ -51,14 +46,12 @@ def load_env() -> None:
     except ImportError:  # pragma: no cover
         pass
 
-
 @dataclass(frozen=True)
 class LLMSettings:
     base_url: str
     api_key: str
     model: str
     timeout_s: float
-
 
 def settings_from_env() -> LLMSettings:
     api_key = os.environ.get(config.ENV_API_KEY, "").strip()
@@ -74,11 +67,9 @@ def settings_from_env() -> LLMSettings:
         timeout_s=float(os.environ.get(config.ENV_TIMEOUT_S, 120.0) or 120.0),
     )
 
-
 def client_from_env(use_cache: bool = True) -> "LLMClient":
     """Standard entry point."""
     return LLMClient(settings=settings_from_env(), use_cache=use_cache)
-
 
 class LLMClient:
     def __init__(self, settings: LLMSettings, use_cache: bool = True,

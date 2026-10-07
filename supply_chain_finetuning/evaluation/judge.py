@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'blinded LLM-as-judge with schema-validated scoring, shuffling and consistency gauge', Date: 2026-10-06
 """Blinded LLM-as-judge.
 
 Design choices that keep the comparison honest:
@@ -30,7 +29,6 @@ JUDGE_DIMENSIONS = (
     "evidence_grounding",
 )
 
-
 class JudgeResult(BaseModel):
     """Validated judge response (six dimensions 0-5 + total 0-30)."""
 
@@ -50,7 +48,6 @@ class JudgeResult(BaseModel):
             raise ValueError(f"total {self.total} != sum of dimensions {sum(dimensions)}")
         return self
 
-
 def warn_if_judge_is_teacher() -> bool:
     """Visible self-preference warning when judge and teacher are the same model."""
     judge = os.environ.get(config.ENV_JUDGE_MODEL, "").strip()
@@ -63,7 +60,6 @@ def warn_if_judge_is_teacher() -> bool:
         )
         return True
     return False
-
 
 def judge_messages(input_feed: Dict[str, Any], output_json_text: str) -> List[Dict[str, str]]:
     import json
@@ -79,7 +75,6 @@ def judge_messages(input_feed: Dict[str, Any], output_json_text: str) -> List[Di
         },
     ]
 
-
 def judge_item(judge: LLMClient, input_feed: Dict[str, Any], output_raw: str,
                salt: str = "") -> JudgeResult:
     """Score one output. The raw text is judged (schema failures get low scores)."""
@@ -91,7 +86,6 @@ def judge_item(judge: LLMClient, input_feed: Dict[str, Any], output_raw: str,
         max_tokens=config.JUDGE_MAX_TOKENS,
         salt=salt,
     )
-
 
 def blind(items: List[Dict[str, Any]], seed: int = config.SEED) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     """Shuffle items into anonymous slots; returns (blinded, slot->truth map)."""
@@ -105,7 +99,6 @@ def blind(items: List[Dict[str, Any]], seed: int = config.SEED) -> Tuple[List[Di
         for mapping, item in zip(truths, items)
     ]
     return blinded, truths
-
 
 def unblind(scored: List[Dict[str, Any]], truths: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Restore arm labels and aggregate per-arm, per-dimension scores."""
@@ -129,7 +122,6 @@ def unblind(scored: List[Dict[str, Any]], truths: List[Dict[str, Any]]) -> Dict[
             "per_dimension": per_dimension,
         }
     return {"items": restored, "summary": summary}
-
 
 def consistency_gauge(judge: LLMClient, items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     """Re-score up to three outputs; report per-dimension differences."""

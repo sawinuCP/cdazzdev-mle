@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'central config module: every constant with its reason', Date: 2026-10-06
 """Central configuration for the equity research assistant.
 
 Every tunable value lives here so that no magic numbers appear in the logic.
@@ -8,7 +7,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
+# Paths
 PROJECT_ROOT = Path(__file__).resolve().parent.parent  # the equity_research folder
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 LOGS_DIR = PROJECT_ROOT / "logs"
@@ -21,14 +20,12 @@ CHART_PNG = OUTPUTS_DIR / "chart.png"
 LLM_CACHE_JSON = OUTPUTS_DIR / ".llm_cache.json"
 LLM_FAILURE_LOG = LOGS_DIR / "llm_failures.log"
 
-
 def ensure_dirs() -> None:
     """Create output/log directories on demand (idempotent)."""
     OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
     LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
-
-# ── Market data ───────────────────────────────────────────────────────────────
+# Market data
 DEFAULT_TICKER = "NVDA"
 
 # 3 years, not 2: the 200-day SMA alone consumes ~200 bars of warm-up, so a 2y fetch
@@ -42,7 +39,7 @@ FETCH_BACKOFF_BASE_S = 1.5
 TRADING_DAYS_PER_YEAR = 252
 WEEK52_BARS = 252  # last 252 bars of High/Low define the 52-week range
 
-# ── Indicators ────────────────────────────────────────────────────────────────
+# Indicators
 SMA_SHORT_WINDOW = 50
 SMA_LONG_WINDOW = 200
 RSI_PERIOD = 14
@@ -55,7 +52,7 @@ BB_WINDOW = 20
 BB_NUM_STD = 2.0
 CHART_WINDOW_BARS = 260  # bars shown in the report chart (recent context, all indicators valid)
 
-# ── Momentum vote (simple condition counting; points are +/-1 each) ──────────
+# Momentum vote (simple condition counting; points are +/-1 each)
 MOMENTUM_BULLISH_NET_THRESHOLD = 2   # net >= +2  -> bullish
 MOMENTUM_BEARISH_NET_THRESHOLD = -2  # net <= -2  -> bearish
 RSI_BULLISH_BAND = (50.0, 70.0)      # constructive but not stretched
@@ -63,7 +60,7 @@ RSI_BEARISH_BAND = (30.0, 50.0)
 RSI_OVERBOUGHT = 70.0                # recorded as a note, never as a vote
 RSI_OVERSOLD = 30.0
 
-# ── News retrieval ladder ─────────────────────────────────────────────────────
+# News retrieval ladder
 MIN_HEADLINES = 10
 MAX_HEADLINES = 20
 PARTIAL_COVERAGE_MIN = 5  # >=5 but <10 -> "partial"; fewer -> "low"
@@ -76,7 +73,7 @@ GOOGLE_RSS_URL = (
     "https://news.google.com/rss/search?q={ticker}+stock&hl=en-US&gl=US&ceid=US:en"
 )
 
-# ── LLM client ────────────────────────────────────────────────────────────────
+# LLM client
 ENV_BASE_URL = "LLM_BASE_URL"
 ENV_API_KEY = "LLM_API_KEY"
 ENV_MODEL = "LLM_MODEL"
@@ -94,12 +91,12 @@ LLM_BACKOFF_BASE_S = 1.5
 LLM_REPAIR_ATTEMPTS = 1          # one extra call that appends the exact validation error
 RETRYABLE_STATUS_CODES = frozenset({429, 500, 502, 503, 504})
 
-# ── Sentiment aggregation ─────────────────────────────────────────────────────
+# Sentiment aggregation
 SENTIMENT_POSITIVE_THRESHOLD = 0.15
 SENTIMENT_NEGATIVE_THRESHOLD = -0.15
 TOP_HEADLINES_COUNT = 3
 
-# ── Signal validation ─────────────────────────────────────────────────────────
+# Signal validation
 SENTENCE_COUNT_MIN = 3
 SENTENCE_COUNT_MAX = 5
 # Splits only at sentence boundaries followed by a capital letter, so decimals

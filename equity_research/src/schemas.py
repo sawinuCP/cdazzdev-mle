@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'pydantic schemas with mechanical validators for LLM outputs', Date: 2026-10-06
 """Pydantic models: every LLM response passes through one of these before use.
 
 The validators enforce the required output properties mechanically — sentence
@@ -15,7 +14,6 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 
 from . import config
 
-
 def _finite_or_none(value: Any) -> Optional[float]:
     """Convert NaN/inf (indicator warm-up) to None so JSON stays clean."""
     if value is None:
@@ -26,7 +24,6 @@ def _finite_or_none(value: Any) -> Optional[float]:
         return None
     return None if math.isnan(as_float) or math.isinf(as_float) else as_float
 
-
 def count_sentences(text: str) -> int:
     """Count sentences using a capital-letter look-ahead split.
 
@@ -36,7 +33,6 @@ def count_sentences(text: str) -> int:
     """
     parts = re.split(config.SENTENCE_SPLIT_REGEX, text.strip())
     return len([p for p in parts if p.strip()])
-
 
 def indicator_concepts_mentioned(text: str) -> int:
     """Number of distinct indicator concepts named in the text (case-insensitive)."""
@@ -78,7 +74,6 @@ class IndicatorSnapshot(BaseModel):
         cleaned = [_finite_or_none(x) for x in v]
         return [x for x in cleaned if x is not None]
 
-
 class SummaryStats(BaseModel):
     """The clean summary dictionary produced by the data pipeline."""
 
@@ -108,7 +103,6 @@ class SummaryStats(BaseModel):
     def _nan_to_none(cls, v: Any) -> Optional[float]:
         return _finite_or_none(v)
 
-
 class HeadlineSentiment(BaseModel):
     """Structured sentiment for ONE headline (one LLM call per headline)."""
 
@@ -117,7 +111,6 @@ class HeadlineSentiment(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     brief_reason: str = ""
     fallback: bool = False  # True when the sentinel replaced a failed LLM item
-
 
 class SentimentAggregate(BaseModel):
     """Per-headline items plus the confidence-weighted aggregate."""
@@ -130,7 +123,6 @@ class SentimentAggregate(BaseModel):
     fallback_count: int = 0
     model_id: str = ""
     generated_at: str = ""
-
 
 class TechnicalSignal(BaseModel):
     """Buy/Hold/Sell recommendation with a mechanically validated justification."""

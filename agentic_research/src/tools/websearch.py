@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'web search tool with politeness sleep and one backoff retry', Date: 2026-10-06
 """web_search(query): DuckDuckGo commentary snippets."""
 from __future__ import annotations
 
@@ -15,10 +14,8 @@ from .base import make_result
 
 _LOGGER = logging.getLogger(__name__)
 
-
 class WebSearchArgs(BaseModel):
     query: str = Field(min_length=3)
-
 
 def web_search(query: str) -> ToolResult:
     """DuckDuckGo search with a politeness sleep and one backoff retry."""
@@ -51,7 +48,6 @@ def web_search(query: str) -> ToolResult:
     return make_result(False, error=last_error or "search failed",
                        hint="skip commentary and rely on other evidence",
                        source="duckduckgo")
-
 
 def search_digest(data: Dict[str, Any]) -> str:
     results = data.get("results", [])

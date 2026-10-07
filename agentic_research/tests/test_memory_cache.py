@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'memory and cache verification: follow-up without tools, cache hit, freshness, corruption guard', Date: 2026-10-06
 """Memory and persistent-cache verification (offline)."""
 from __future__ import annotations
 
@@ -11,14 +10,12 @@ import pytest
 from src import config
 from src.runtime.memory import MemoryStore, cache_path_for, load_cache, save_cache
 
-
 def test_tool_counter_moves_only_for_tools():
     store = MemoryStore()
     result = json.dumps({"ok": True})
     before = store.tool_call_count
     store.add_tool_result("agent_a", config.TOOL_GET_PRICE_DATA, {}, result)
     assert store.tool_call_count == before + 1
-
 
 def test_followup_answered_from_memory_without_tool_calls(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "LOG_TRACE_JSONL", tmp_path / "trace.jsonl")
@@ -44,13 +41,11 @@ def test_followup_answered_from_memory_without_tool_calls(tmp_path, monkeypatch)
     assert llm.calls[0]["messages"][0]["content"].startswith("You") is False or True
     memory_module.LAST_SESSION = None
 
-
 def test_cache_save_and_hit(tmp_path):
     payload = {"as_of": "2026-10-06", "ticker": "NVDA", "report": {"x": 1}}
     save_cache(payload, "NVDA", tmp_path)
     cached, error = load_cache("NVDA", tmp_path)
     assert error is None and cached["report"] == {"x": 1}
-
 
 def test_cache_different_day_is_a_miss(tmp_path):
     today = date.today()
@@ -59,7 +54,6 @@ def test_cache_different_day_is_a_miss(tmp_path):
     path.write_text(json.dumps({"schema_version": 1}), encoding="utf-8")
     cached, error = load_cache("NVDA", tmp_path)   # today: miss
     assert cached is None and error is None
-
 
 def test_corrupt_cache_invalidated(tmp_path):
     path = cache_path_for("NVDA", tmp_path)

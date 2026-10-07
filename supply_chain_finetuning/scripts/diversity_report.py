@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'dataset diversity report: token histograms, keyword coverage, heatmap, near-duplicates', Date: 2026-10-06
 """Dataset diversity report.
 
 Produces the evidence that the dataset is diverse by construction:
@@ -31,7 +30,6 @@ from src.prompts import STUDENT_SYSTEM  # noqa: E402
 
 _TOKENIZER_INFO: Dict[str, str] = {}
 
-
 def load_raw(path: Path) -> List[Dict[str, Any]]:
     """Read the accepted samples from raw.jsonl."""
     records: List[Dict[str, Any]] = []
@@ -41,7 +39,6 @@ def load_raw(path: Path) -> List[Dict[str, Any]]:
             if line:
                 records.append(json.loads(line))
     return records
-
 
 def get_tokenizer():
     """Student tokenizer with a documented whitespace fallback."""
@@ -59,19 +56,16 @@ def get_tokenizer():
         )
         return None
 
-
 def token_count(text: str, tokenizer) -> int:
     if tokenizer is not None:
         return len(tokenizer.encode(text))
     return len(text.split())
-
 
 def chat_example_text(record: Dict[str, Any]) -> str:
     """Full training example text (system + user + assistant) for length checks."""
     user = json.dumps(record["input_feed"], sort_keys=True, ensure_ascii=False)
     assistant = json.dumps(record["gold_assessment"], sort_keys=True, ensure_ascii=False)
     return f"{STUDENT_SYSTEM}\n{user}\n{assistant}"
-
 
 def token_length_stats(records: List[Dict[str, Any]], tokenizer) -> Dict[str, Any]:
     lengths = [token_count(chat_example_text(r), tokenizer) for r in records]
@@ -85,7 +79,6 @@ def token_length_stats(records: List[Dict[str, Any]], tokenizer) -> Dict[str, An
         "budget": config.MAX_SEQ_LENGTH,
         "fits": share_fit >= config.TOKEN_FIT_SHARE,
     }
-
 
 def plot_token_histogram(records: List[Dict[str, Any]], tokenizer, path: Path) -> None:
     lengths = [token_count(chat_example_text(r), tokenizer) for r in records]
@@ -105,7 +98,6 @@ def _terms(text: str) -> List[str]:
     return [t for t in re.findall(r"[a-z]+", text.lower()) if t not in config.STOPWORDS
             and len(t) > 2]
 
-
 def keyword_frequencies(records: List[Dict[str, Any]]) -> Tuple[Counter, Dict[str, Counter]]:
     """Top terms overall (from the free-text fields) and per family."""
     overall: Counter = Counter()
@@ -121,7 +113,6 @@ def keyword_frequencies(records: List[Dict[str, Any]]) -> Tuple[Counter, Dict[st
         overall.update(terms)
         per_family.setdefault(family, Counter()).update(terms)
     return overall, per_family
-
 
 def distinguishing_terms(per_family: Dict[str, Counter], overall: Counter,
                          per_family_totals: Dict[str, int], top_n: int = 5) -> Dict[str, List[str]]:
@@ -141,7 +132,6 @@ def distinguishing_terms(per_family: Dict[str, Counter], overall: Counter,
         result[family] = [term for _, term in scored[:top_n]]
     return result
 
-
 def family_category_matrix(records: List[Dict[str, Any]]) -> Tuple[List[str], List[str], List[List[int]]]:
     families = sorted({r["family"] for r in records})
     categories = sorted({r["product_category"] for r in records})
@@ -151,7 +141,6 @@ def family_category_matrix(records: List[Dict[str, Any]]) -> Tuple[List[str], Li
             categories.index(record["product_category"])
         ] += 1
     return families, categories, grid
-
 
 def plot_heatmap(families: List[str], categories: List[str],
                  grid: List[List[int]], path: Path) -> None:
@@ -168,7 +157,6 @@ def plot_heatmap(families: List[str], categories: List[str],
     fig.savefig(path, dpi=140)
     plt.close(fig)
 
-
 def near_duplicate_pairs(records: List[Dict[str, Any]]) -> int:
     serialized = [
         json.dumps(r["input_feed"], sort_keys=True, ensure_ascii=False) for r in records
@@ -179,7 +167,6 @@ def near_duplicate_pairs(records: List[Dict[str, Any]]) -> int:
             if fuzz.token_set_ratio(serialized[i], serialized[j]) > config.NEAR_DUPLICATE_THRESHOLD:
                 count += 1
     return count
-
 
 def main() -> None:
     config.ensure_dirs()
@@ -217,7 +204,6 @@ def main() -> None:
     duplicates = near_duplicate_pairs(records)
     print(f"near-duplicate pairs above threshold: {duplicates} (expected 0)")
     print(f"charts written to {config.DIVERSITY_DIR}")
-
 
 if __name__ == "__main__":
     main()

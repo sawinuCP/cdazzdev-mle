@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'analysis layer: per-headline sentiment with one call each and signal generation with fallback', Date: 2026-10-06
 """LLM analysis layer: per-headline sentiment and the recommendation signal.
 
 Robustness contract: an LLM item that cannot be validated becomes a neutral
@@ -26,7 +25,6 @@ _LOGGER = logging.getLogger(__name__)
 
 _SENTINEL = "neutral"
 
-
 def _sentiment_messages(ticker: str, headline: str) -> List[Dict[str, str]]:
     return [
         {"role": "system", "content": prompts.SENTIMENT_SYSTEM},
@@ -35,7 +33,6 @@ def _sentiment_messages(ticker: str, headline: str) -> List[Dict[str, str]]:
             "content": prompts.SENTIMENT_USER.format(ticker=ticker.upper(), headline=headline),
         },
     ]
-
 
 def _score_one(
     client: LLMClient, ticker: str, headline: str
@@ -55,14 +52,12 @@ def _score_one(
             fallback=True,
         )
 
-
 def _aggregate_label(overall: float) -> str:
     if overall > config.SENTIMENT_POSITIVE_THRESHOLD:
         return "positive"
     if overall < config.SENTIMENT_NEGATIVE_THRESHOLD:
         return "negative"
     return "neutral"
-
 
 def score_headlines(ticker: str, headlines: List[Dict[str, Any]], client: LLMClient) -> SentimentAggregate:
     """Validate one headline per call, then aggregate with confidence weighting.
@@ -154,7 +149,6 @@ def build_evidence_bundle(summary: SummaryStats, sentiment: SentimentAggregate) 
         },
     }
 
-
 def _signal_messages(ticker: str, bundle: Dict[str, Any]) -> List[Dict[str, str]]:
     import json as _json
 
@@ -169,7 +163,6 @@ def _signal_messages(ticker: str, bundle: Dict[str, Any]) -> List[Dict[str, str]
             ),
         },
     ]
-
 
 def _rules_fallback(summary: SummaryStats, sentiment: Optional[SentimentAggregate]) -> TechnicalSignal:
     """Deterministic recommendation derived from the momentum vote.
@@ -209,7 +202,6 @@ def _rules_fallback(summary: SummaryStats, sentiment: Optional[SentimentAggregat
         ),
         generated_by="rules_fallback",
     )
-
 
 def generate_signal(
     summary: SummaryStats,

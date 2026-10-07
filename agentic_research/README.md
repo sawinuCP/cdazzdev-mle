@@ -3,7 +3,7 @@
 Two agents with restricted tool sets autonomously research a ticker through a
 typed state machine, critique each other's gaps, and produce a validated
 three-risk report whose **numbers are computed in Python** (the LLM writes
-prose, never arithmetic). Built per `docs/plan_task3_agentic.md`.
+prose, never arithmetic).
 
 ## Architecture
 
@@ -121,16 +121,13 @@ and Pydantic validation only assume a sane chat completion endpoint.
 
 ## Honest notes
 
-- `config.FAULT_INJECT` is a deliberate, labelled test harness - a tool
-  failure you chose to inject to verify the fallback path. It is off in real
-  runs.
-- Replans are stamped by the loop the moment they occur, with the
-  destination tool recorded; the trace does not invent destinations.
-- The demo report and the trace detail may vary run to run because the
-  choreography is genuinely autonomous - that is the point of the design.
+- `config.FAULT_INJECT` is a labelled test harness: it makes a chosen tool fail
+  on demand to verify the fallback path. It is empty in real runs.
+- Replans are stamped by the loop the moment they occur, with the destination
+  tool recorded; the trace does not invent destinations.
+- Runs may vary because the choreography is genuinely autonomous - that is the
+  point of the design.
 
 ## AI-assisted development
 
-Every file declares its assistance provenance in its header, aligned with
-`CITATIONS.md`. The reflection (<=600 words) is in the repository-root
-`REFLECTION.md`.
+AI tool usage is disclosed in the repository-root `CITATIONS.md`.

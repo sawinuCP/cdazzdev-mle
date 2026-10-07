@@ -1,4 +1,3 @@
-# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'evaluation module verification: normalization, ROUGE sanity, ground guard, judge blinding', Date: 2026-10-06
 """Offline verification for the evaluation modules (mocked judge, no network)."""
 from __future__ import annotations
 
@@ -40,14 +39,12 @@ INPUT_FEED = {
     "notes": "Container dwell time keeps climbing at the hub port.",
 }
 
-
 def test_normalize_extracts_fenced_json():
     fenced = "```json\n" + json.dumps(VALID_OUTPUT) + "\n```"
     normalized = normalize_output(fenced)
     assert normalized.schema_valid is True
     assert normalized.canonical_text is not None
     assert normalized.parsed["anomaly_class"] == "port_logistics_congestion"
-
 
 def test_normalize_marks_prose_wrapped_and_broken_outputs():
     noisy = "Here is my answer:\n" + json.dumps(VALID_OUTPUT) + "\nHope that helps!"
@@ -57,18 +54,15 @@ def test_normalize_marks_prose_wrapped_and_broken_outputs():
     assert broken.canonical_text is None
     assert "invalid JSON" in broken.error
 
-
 def test_normalize_flags_out_of_taxonomy_class():
     invalid = {**VALID_OUTPUT, "anomaly_class": "planet_alignment"}
     normalized = normalize_output(json.dumps(invalid))
     assert normalized.schema_valid is False
     assert "taxonomy" in normalized.error
 
-
 def test_rouge_l_identical_texts_score_one():
     text = "the quick brown fox jumps over the lazy dog"
     assert rouge_l(text, text) == pytest.approx(1.0)
-
 
 def test_ground_guard_flags_unbacked_claims():
     violations = ground_guard_violations(
@@ -78,13 +72,11 @@ def test_ground_guard_flags_unbacked_claims():
     assert violations and "strike" in violations[0]
     assert ground_guard_violations(VALID_OUTPUT, INPUT_FEED) == []
 
-
 def test_judge_result_total_must_match_dimensions():
     dimensions = {name: 4 for name in judge_module.JUDGE_DIMENSIONS}
     assert JudgeResult(**dimensions, total=24, one_line_reason="ok").total == 24
     with pytest.raises(Exception):
         JudgeResult(**dimensions, total=30, one_line_reason="inflated")
-
 
 def test_blinding_hides_arms_and_unblind_restores():
     items = [
@@ -103,7 +95,6 @@ def test_blinding_hides_arms_and_unblind_restores():
     restored_arms = {item["tuple_id"]: item["arm"] for item in report["items"]}
     assert restored_arms == {item["tuple_id"]: item["arm"] for item in items}
 
-
 def test_evaluate_arm_programmatic_rates():
     records = {
         "tuple-001": {"input_feed": INPUT_FEED, "gold_assessment": VALID_OUTPUT},
@@ -119,7 +110,6 @@ def test_evaluate_arm_programmatic_rates():
     assert report["rouge_l"]["n"] == 1  # only the schema-valid item gets ROUGE
     broken_row = next(row for row in report["rows"] if row["tuple_id"] == "tuple-002")
     assert broken_row["rouge_l"] is None
-
 
 def test_manual_audit_template_and_pending_rate(tmp_path):
     records = {"tuple-001": {"input_feed": INPUT_FEED, "gold_assessment": VALID_OUTPUT}}
