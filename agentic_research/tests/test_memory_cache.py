@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from src import config
-from src.memory import MemoryStore, cache_path_for, load_cache, save_cache
+from src.runtime.memory import MemoryStore, cache_path_for, load_cache, save_cache
 
 
 def test_tool_counter_moves_only_for_tools():
@@ -22,7 +22,7 @@ def test_tool_counter_moves_only_for_tools():
 
 def test_followup_answered_from_memory_without_tool_calls(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "LOG_TRACE_JSONL", tmp_path / "trace.jsonl")
-    from src import memory as memory_module
+    from src.runtime import memory as memory_module
 
     store = MemoryStore()
     memory_module.LAST_SESSION = store  # the session the follow-up will use

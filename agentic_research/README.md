@@ -58,17 +58,23 @@ agentic_research/
   src/
     config.py            # env wiring, whitelists, caps, paths
     schemas.py           # AgentBrief, ToolResult, ResearchReport, ...
-    indicators.py        # SMA/RSI/Bollinger/MACD + InsufficientHistoryError
-    llm_client.py        # OpenAI-compatible client: retries, JSON repair,
-                         # response cache, last_cache_hit
-    tracing.py           # TraceLogger (JSONL + in-memory mirror)
-    memory.py            # MemoryStore, cache save/load, session record
     prompts.py           # every agent / composer / memory prompt
-    tools.py             # the five tools, arg models, dispatcher, digests
-    agents.py            # AgentLoop guards + role runners + composers
-    graph.py             # LangGraph state machine + run_research()
     main.py              # run_single_agent_mode(), answer_from_memory(), CLI
     printing.py          # trace narrative renderer
+    runtime/             # I/O infrastructure
+      llm_client.py      # OpenAI-compatible client: retries, JSON repair,
+                         # response cache, last_cache_hit
+      tracing.py         # TraceLogger (JSONL + in-memory mirror)
+      memory.py          # MemoryStore, cache save/load, session record
+    tools/               # the data-access layer (one module per tool)
+      indicators.py      # SMA/RSI/Bollinger/MACD + InsufficientHistoryError
+      pricing.py news.py volatility.py sentiment.py websearch.py
+      sources.py         # network injection point (tests stub these)
+      registry.py        # arg models, dispatch, digests, signatures
+      __init__.py        # public API re-exports (stable tool interface)
+    agents/              # the decision layer
+      agents.py          # AgentLoop guards + role runners + composers
+      graph.py           # LangGraph state machine + run_research()
   tests/                 # offline pytest suite (mocked LLM + data sources)
   notebooks/agentic_research.ipynb   # executed live demo
   dashboards/trace_dashboard.py      # streamlit over the trace JSONL

@@ -7,6 +7,31 @@ uses an LLM (any OpenAI-compatible provider) to produce **structured, Pydantic-v
 news sentiment and a reasoned Buy/Hold/Sell recommendation. Everything lands in a one-page
 HTML research brief with an embedded chart and a risk disclaimer.
 
+## Project structure
+
+```
+equity_research/
+  src/
+    config.py            # constants, paths, thresholds
+    schemas.py           # shared Pydantic contracts (summary, sentiment, signal)
+    main.py              # CLI: full pipeline, artefacts, stale-cache fallback
+    llm/                 # LLM boundary layer
+      llm_client.py      # OpenAI-compatible client: retries, JSON repair, cache, failure log
+      prompts.py         # every prompt as documented constants
+    data/                # market + news ingestion
+      data_pipeline.py   # OHLCV fetch ladder, cleaning, summary dictionary
+      news.py            # news ladder (yfinance both shapes → Yahoo RSS → Google RSS)
+    analysis/            # computation layer
+      indicators.py      # SMA/RSI/MACD/Bollinger from first principles
+      analysis.py        # per-headline sentiment + signal generation
+    reporting/           # presentation layer
+      report.py          # HTML brief with inline CSS + base64 chart
+  tests/                 # offline pytest suite (50 tests)
+  notebooks/             # executed demo notebook
+  outputs/               # committed artefacts + LLM response cache
+  logs/                  # runtime logs (gitignored)
+```
+
 ## How it works
 
 ```

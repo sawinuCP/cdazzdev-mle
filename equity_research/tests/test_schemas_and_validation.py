@@ -7,8 +7,9 @@ import json
 import pytest
 from pydantic import ValidationError
 
-from src import analysis, prompts
-from src.llm_client import LLMValidationError
+from src.analysis import analysis
+from src.llm import prompts
+from src.llm.llm_client import LLMValidationError
 from src.schemas import (
     HeadlineSentiment,
     SentimentAggregate,

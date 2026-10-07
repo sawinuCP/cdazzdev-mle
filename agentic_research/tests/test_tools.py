@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 
 from src import config, tools
-from src.llm_client import LLMSettings
+from src.runtime.llm_client import LLMSettings
 from helpers import FakeLLM, synthetic_frame
 
 
@@ -20,12 +20,12 @@ def fake_frame():
 
 @pytest.fixture
 def no_sleep(monkeypatch):
-    monkeypatch.setattr(tools.time, "sleep", lambda *_: None)
+    monkeypatch.setattr(tools.websearch.time, "sleep", lambda *_: None)
 
 
 # ── get_price_data ────────────────────────────────────────────────────────────
 def test_get_price_data_compact_payload(fake_frame, monkeypatch):
-    monkeypatch.setattr(tools, "_fetch_history", lambda t, p: fake_frame)
+    monkeypatch.setattr(tools.sources, "_fetch_history", lambda t, p: fake_frame)
     result = tools.get_price_data("NVDA", "1y")
     assert result.ok and result.source == "yfinance"
     data = result.data
@@ -41,7 +41,7 @@ def test_get_price_data_rejects_bad_period():
 
 
 def test_get_price_data_empty_frame_is_not_an_exception(monkeypatch):
-    monkeypatch.setattr(tools, "_fetch_history", lambda t, p: pd.DataFrame())
+    monkeypatch.setattr(tools.sources, "_fetch_history", lambda t, p: pd.DataFrame())
     result = tools.get_price_data("NVDA", "1y")
     assert not result.ok
     assert "shorter period" in (result.hint or "")
@@ -49,7 +49,7 @@ def test_get_price_data_empty_frame_is_not_an_exception(monkeypatch):
 
 # ── calculate_volatility ──────────────────────────────────────────────────────
 def test_volatility_exact_on_synthetic_series(fake_frame, monkeypatch):
-    monkeypatch.setattr(tools, "_fetch_history", lambda t, p: fake_frame)
+    monkeypatch.setattr(tools.sources, "_fetch_history", lambda t, p: fake_frame)
     close = fake_frame["Close"].astype(float)
     window = 90
     log_returns = np.log(close / close.shift(1)).dropna().tail(window)
@@ -72,7 +72,7 @@ def test_volatility_window_validation():
 
 
 def test_volatility_band_thresholds(fake_frame, monkeypatch):
-    monkeypatch.setattr(tools, "_fetch_history", lambda t, p: fake_frame)
+    monkeypatch.setattr(tools.sources, "_fetch_history", lambda t, p: fake_frame)
     result = tools.calculate_volatility("NVDA", 252)
     ann = result.data["annualized"]
     expected_band = ("low" if ann < config.VOL_BAND_LOW_MAX
@@ -104,8 +104,8 @@ def _rss(*titles: str) -> str:
 
 
 def test_news_ladder_falls_through_to_rss(monkeypatch):
-    monkeypatch.setattr(tools, "_news_raw", lambda t: [])
-    monkeypatch.setattr(tools, "_http_get",
+    monkeypatch.setattr(tools.sources, "_news_raw", lambda t: [])
+    monkeypatch.setattr(tools.sources, "_http_get",
                         lambda url: _rss("RSS headline A", "RSS headline B"))
     result = tools.get_news("NVDA", 2)
     assert result.ok and len(result.data["headlines"]) == 2
@@ -114,15 +114,15 @@ def test_news_ladder_falls_through_to_rss(monkeypatch):
 
 def test_news_zero_results_returns_failure_with_hint(monkeypatch):
     empty_feed = '<?xml version="1.0"?><rss version="2.0"><channel></channel></rss>'
-    monkeypatch.setattr(tools, "_news_raw", lambda t: [])
-    monkeypatch.setattr(tools, "_http_get", lambda url: empty_feed)
+    monkeypatch.setattr(tools.sources, "_news_raw", lambda t: [])
+    monkeypatch.setattr(tools.sources, "_http_get", lambda url: empty_feed)
     result = tools.get_news("NVDA", 10)
     assert not result.ok and "web_search" in (result.hint or "")
 
 
 def test_news_coverage_labels(monkeypatch):
-    monkeypatch.setattr(tools, "_news_raw", lambda t: [])
-    monkeypatch.setattr(tools, "_http_get",
+    monkeypatch.setattr(tools.sources, "_news_raw", lambda t: [])
+    monkeypatch.setattr(tools.sources, "_http_get",
                         lambda url: _rss("H1", "H2", "H3"))
     assert tools.get_news("NVDA", 10).data["coverage"] == "low"
     assert tools.get_news("NVDA", 3).data["coverage"] == "full"
@@ -165,7 +165,7 @@ def test_sentiment_zero_confidence_guard():
 
 # ── web_search ────────────────────────────────────────────────────────────────
 def test_web_search_returns_ranked_results(no_sleep, monkeypatch):
-    monkeypatch.setattr(tools, "_ddgs_text",
+    monkeypatch.setattr(tools.sources, "_ddgs_text",
                         lambda q, max_results: [
                             {"title": "Analysts weigh in", "body": "snippet body",
                              "href": "http://x/1"}])
@@ -183,7 +183,7 @@ def test_web_search_backoff_then_success(no_sleep, monkeypatch):
             raise RuntimeError("rate limited")
         return [{"title": "Recovered", "body": "b", "href": "http://x/2"}]
 
-    monkeypatch.setattr(tools, "_ddgs_text", flaky)
+    monkeypatch.setattr(tools.sources, "_ddgs_text", flaky)
     result = tools.web_search("NVDA risks")
     assert result.ok and calls["n"] == 2  # one backoff retry happened
 
@@ -192,7 +192,7 @@ def test_web_search_failure_never_raises(no_sleep, monkeypatch):
     def dead(query, max_results):
         raise RuntimeError("down")
 
-    monkeypatch.setattr(tools, "_ddgs_text", dead)
+    monkeypatch.setattr(tools.sources, "_ddgs_text", dead)
     result = tools.web_search("NVDA risks")
     assert not result.ok and result.error
 

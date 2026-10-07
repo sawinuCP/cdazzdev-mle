@@ -6,7 +6,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src import config, indicators
+from src import config
+from src.analysis import indicators
 
 
 def _series(values) -> pd.Series:

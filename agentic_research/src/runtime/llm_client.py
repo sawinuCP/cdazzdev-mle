@@ -23,7 +23,7 @@ from typing import Any, Dict, List, Optional, Type, TypeVar
 from openai import OpenAI
 from pydantic import BaseModel, ValidationError
 
-from . import config
+from .. import config
 
 TModel = TypeVar("TModel", bound=BaseModel)
 
@@ -224,7 +224,7 @@ class LLMClient:
                     self.last_cache_hit = False
         content = self._complete(messages, budget)
         try:
-            return self._parse(content, model_cls)
+            value = self._parse(content, model_cls)
         except LLMValidationError as first_error:
             repair_messages = list(messages) + [
                 {"role": "assistant", "content": content},
@@ -244,6 +244,7 @@ class LLMClient:
             except LLMValidationError as exc:
                 _LOGGER.error("LLM validation failed after repair: %s", exc)
                 raise
-            if self.use_cache:
-                self._write_cache(key, content)
-            return value
+        if self.use_cache:
+            # cache the FINAL successful content first-attempt or repaired
+            self._write_cache(key, content)
+        return value

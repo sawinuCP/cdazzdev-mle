@@ -31,15 +31,14 @@ file carries the inline tag and a row here.)*
 | File | Type | Entry |
 |---|---|---|
 | `equity_research/src/config.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'central config module: every constant with its reason', Date: 2026-10-06` |
-| `equity_research/src/indicators.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'first-principles SMA/RSI/MACD/Bollinger with guards and tests-friendly purity', Date: 2026-10-06` |
+| `equity_research/src/analysis/indicators.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'first-principles SMA/RSI/MACD/Bollinger with guards and tests-friendly purity', Date: 2026-10-06` |
 | `equity_research/src/schemas.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'pydantic schemas with mechanical validators for LLM outputs', Date: 2026-10-06` |
-| `equity_research/src/prompts.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'all LLM prompts as documented constants with placeholders only', Date: 2026-10-06` |
-| `equity_research/src/llm_client.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'OpenAI-compatible LLM client: retries, JSON repair, cache, failure log', Date: 2026-10-06` |
-| `equity_research/src/news.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'news retrieval ladder yfinance both shapes plus RSS fallbacks with dedupe', Date: 2026-10-06` |
-| `equity_research/src/data_pipeline.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'market data pipeline with fetch ladder, cleaning, summary dictionary', Date: 2026-10-06` |
-| `equity_research/src/analysis.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'analysis layer: per-headline sentiment with one call each and signal generation with fallback', Date: 2026-10-06` |
-| `equity_research/src/report.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'HTML research brief with three-panel matplotlib chart embedded base64 and risk disclaimer', Date: 2026-10-06` |
-| `equity_research/src/main.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'CLI entry point: full pipeline with friendly failures and stale-cache fallback', Date: 2026-10-06` |
+| `equity_research/src/llm/prompts.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'all LLM prompts as documented constants with placeholders only', Date: 2026-10-06` |
+| `equity_research/src/llm/llm_client.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'OpenAI-compatible LLM client: retries, JSON repair, cache, failure log', Date: 2026-10-06` |
+| `equity_research/src/data/news.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'news retrieval ladder yfinance both shapes plus RSS fallbacks with dedupe', Date: 2026-10-06` |
+| `equity_research/src/data/data_pipeline.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'market data pipeline with fetch ladder, cleaning, summary dictionary', Date: 2026-10-06` |
+| `equity_research/src/analysis/analysis.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'analysis layer: per-headline sentiment with one call each and signal generation with fallback', Date: 2026-10-06` |
+| `equity_research/src/reporting/report.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'HTML research brief with three-panel matplotlib chart embedded base64 and risk disclaimer', Date: 2026-10-06` |
 | `equity_research/tests/*` (6 files + conftest) | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'offline pytest suite: indicator goldens/properties/slow-loop, pipeline, news, schemas, LLM client, hygiene', Date: 2026-10-06` |
 | `equity_research/notebooks/equity_research.ipynb` | AI-assisted artifact | Generated and executed by Cline (Claude Sonnet 5.5); the LLM outputs inside were produced by GLM-5.3-Flash via the configured OpenAI-compatible gateway and replayed from the committed cache |
 | `equity_research/README.md` | AI-assisted document | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'project README: purpose, setup, provider switching, results summary', Date: 2026-10-06` |
@@ -79,14 +78,14 @@ file carries the inline tag and a row here.)*
 |---|---|---|
 | `agentic_research/src/config.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'env wiring, whitelists, caps with reasons, paths, fault-injection hook', Date: 2026-10-06` |
 | `agentic_research/src/schemas.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'typed ReAct models: brief, critique, clarification, validated report', Date: 2026-10-06` |
-| `agentic_research/src/indicators.py` | Adapted code (copied from `equity_research/src/indicators.py` at commit `9b00d33`, `# SOURCE:` header) | Project-scoped reuse; per-file origin recorded inline |
-| `agentic_research/src/llm_client.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'OpenAI-compatible client: retry, JSON repair, response cache, cache-hit flag', Date: 2026-10-06` |
-| `agentic_research/src/tracing.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'JSONL trace logger with in-memory mirror and digest outputs', Date: 2026-10-06` |
-| `agentic_research/src/memory.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'session memory store plus daily persistent cache with schema versioning and corruption guard', Date: 2026-10-06` |
+| `agentic_research/src/tools/indicators.py` | Adapted code (copied from `equity_research/src/indicators.py` at commit `9b00d33`, `# SOURCE:` header) | Project-scoped reuse; per-file origin recorded inline |
+| `agentic_research/src/runtime/llm_client.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'OpenAI-compatible client: retry, JSON repair, response cache, cache-hit flag', Date: 2026-10-06` |
+| `agentic_research/src/runtime/tracing.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'JSONL trace logger with in-memory mirror and digest outputs', Date: 2026-10-06` |
+| `agentic_research/src/runtime/memory.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'session memory store plus daily persistent cache with schema versioning and corruption guard', Date: 2026-10-06` |
 | `agentic_research/src/prompts.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'all agent protocol, critique writer, clarification, composer and memory prompts as constants', Date: 2026-10-06` |
-| `agentic_research/src/tools.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'five tools with ToolResult contract, arg models, injected data sources, digest summaries', Date: 2026-10-06` |
-| `agentic_research/src/agents.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'ReAct agent loop: JSON-action protocol, duplicate and iteration guards, replan stamping, whitelist enforcement', Date: 2026-10-06` |
-| `agentic_research/src/graph.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'LangGraph state machine: cache check, two-agent roles, exactly-one critique cycle, save cache', Date: 2026-10-06` |
+| `agentic_research/src/tools/*` (base, pricing, news, volatility, sentiment, websearch, sources, registry, __init__) | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'five tools with ToolResult contract, arg models, injected data sources, digest summaries', Date: 2026-10-06` |
+| `agentic_research/src/agents/agents.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'ReAct agent loop: JSON-action protocol, duplicate and iteration guards, replan stamping, whitelist enforcement', Date: 2026-10-06` |
+| `agentic_research/src/agents/graph.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'LangGraph state machine: cache check, two-agent roles, exactly-one critique cycle, save cache', Date: 2026-10-06` |
 | `agentic_research/src/main.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'public entry points: single-agent mode, memory follow-up, CLI', Date: 2026-10-06` |
 | `agentic_research/src/printing.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'human-readable trace renderer with per-agent summary counts', Date: 2026-10-06` |
 | `agentic_research/tests/*` (10 files + conftest + helpers) | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'offline pytest suite: indicators goldens/edges, tools, agents, whitelist pairs, handoff, schemas, graph e2e with fault and crash injection, memory/cache, hygiene', Date: 2026-10-06` |

@@ -16,7 +16,8 @@ from typing import Any, Dict, Optional, Tuple
 import pandas as pd
 from pydantic import ValidationError
 
-from . import config, indicators
+from .. import config
+from ..analysis import indicators
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -117,7 +118,7 @@ def fetch_info(ticker: str) -> Dict[str, Any]:
 
 def load_cached_summary() -> Optional["SummaryStats"]:
     """Load the previous summary (flagged stale) for the offline fallback path."""
-    from .schemas import SummaryStats  # local import avoids a circular dependency
+    from ..schemas import SummaryStats  # local import avoids a circular dependency
 
     try:
         data = json_loads(config.SUMMARY_JSON.read_text(encoding="utf-8"))
@@ -141,7 +142,7 @@ def build_summary(
     info: Optional[Dict[str, Any]] = None,
 ) -> "SummaryStats":
     """Assemble the clean summary dictionary and validate it into ``SummaryStats``."""
-    from .schemas import IndicatorSnapshot, SummaryStats  # local import: avoids cycles
+    from ..schemas import IndicatorSnapshot, SummaryStats  # local import: avoids cycles
 
     close = frame["Close"]
     ind = indicators.compute_all(close)

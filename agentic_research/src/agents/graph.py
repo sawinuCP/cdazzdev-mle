@@ -15,17 +15,17 @@ from typing import Any, Dict, List, Optional, TypedDict
 
 from langgraph.graph import END, StateGraph
 
-from . import config
-from . import memory as memory_mod
+from .. import config
+from ..runtime import memory as memory_mod
 from .agents import (
     AgentBrief, _fallback_report, build_critique_request, compute_one_sigma,
     detect_gaps, run_agent_a, run_agent_a_respond, run_agent_b_final,
     run_agent_b_gather,
 )
-from .llm_client import LLMClient
-from .memory import MemoryStore, load_cache, save_cache
-from .schemas import CritiqueRequest
-from .tracing import TraceLogger
+from ..runtime.llm_client import LLMClient
+from ..runtime.memory import MemoryStore, load_cache, save_cache
+from ..schemas import CritiqueRequest
+from ..runtime.tracing import TraceLogger
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -126,6 +126,7 @@ def _node_agent_a_respond(state: ResearchState) -> Dict[str, Any]:
     state["trace"].log("handoff", agent="agent_a", tool="clarification_response",
                        args={"request_id": response.request_id},
                        output=f"{len(response.answers)} answers", ok=True)
+    state["store"].critique_cycles += 1  # the cycle landed: counted once per graph
     return {"clarification": response.model_dump(), "brief": brief_v2.model_dump(),
             "tool_call_count": state["store"].tool_call_count,
             "replans": state["store"].replans, "critique_count": 1}
@@ -248,7 +249,7 @@ def build_graph(llm: LLMClient, trace: TraceLogger, store: MemoryStore):
 def run_research(ticker: str, llm: Optional[LLMClient] = None,
                  use_cache: bool = True) -> Dict[str, Any]:
     """One-call entry point: full two-agent research run (no manual input)."""
-    from .llm_client import client_from_env, load_env
+    from ..runtime.llm_client import client_from_env, load_env
 
     load_env()
     config.ensure_dirs()

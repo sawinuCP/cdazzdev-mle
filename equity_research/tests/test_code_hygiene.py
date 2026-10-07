@@ -6,7 +6,9 @@ import json
 import re
 from pathlib import Path
 
-from src import analysis, config, prompts
+from src import config
+from src.analysis import analysis
+from src.llm import prompts
 from src.schemas import HeadlineSentiment, SentimentAggregate, SummaryStats
 
 PROJECT_ROOT = Path(config.PROJECT_ROOT)
@@ -22,7 +24,8 @@ KEY_PATTERNS = (
 
 
 def _source_files():
-    return sorted(SRC_DIR.glob("*.py"))
+    """Every python file under src/, including the layered subpackages."""
+    return sorted(SRC_DIR.rglob("*.py"))
 
 
 def test_no_date_literals_outside_comment_lines():
@@ -37,7 +40,7 @@ def test_no_date_literals_outside_comment_lines():
 
 
 def test_no_system_prompt_text_outside_prompts_module():
-    """All prompt text lives only in prompts.py (grep-proof separation)."""
+    """All prompt text lives only in src/llm/prompts.py (grep-proof separation)."""
     for path in _source_files():
         if path.name == "prompts.py":
             continue

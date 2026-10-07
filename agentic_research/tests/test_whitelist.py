@@ -5,9 +5,9 @@ from __future__ import annotations
 import pytest
 
 from src import config
-from src.agents import AgentLoop, CrossAgentToolAccessError
-from src.memory import MemoryStore
-from src.tracing import TraceLogger
+from src.agents.agents import AgentLoop, CrossAgentToolAccessError
+from src.runtime.memory import MemoryStore
+from src.runtime.tracing import TraceLogger
 from helpers import FakeLLM
 
 

@@ -16,7 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, Optional, Tuple, TypeVar
 
-from . import config
+from .. import config
 
 TResult = TypeVar("TResult")
 

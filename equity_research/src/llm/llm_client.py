@@ -33,7 +33,8 @@ from typing import Any, Dict, List, Optional, Type, TypeVar
 from openai import OpenAI
 from pydantic import BaseModel, ValidationError
 
-from . import config, prompts
+from .. import config
+from . import prompts
 
 TModel = TypeVar("TModel", bound=BaseModel)
 

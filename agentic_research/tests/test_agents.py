@@ -7,9 +7,9 @@ import json
 import pytest
 
 from src import config, tools
-from src.agents import AgentLoop
-from src.memory import MemoryStore
-from src.tracing import TraceLogger
+from src.agents.agents import AgentLoop
+from src.runtime.memory import MemoryStore
+from src.runtime.tracing import TraceLogger
 from helpers import FakeLLM, synthetic_frame
 
 
@@ -27,14 +27,14 @@ def trace(tmp_path):
 def mock_data_sources(monkeypatch):
     """All network sources mocked; llm_sentiment stubbed to a canned result."""
     frame = synthetic_frame()
-    monkeypatch.setattr(tools, "_fetch_history", lambda t, p: frame)
-    monkeypatch.setattr(tools, "_news_raw", lambda t: [])
+    monkeypatch.setattr(tools.sources, "_fetch_history", lambda t, p: frame)
+    monkeypatch.setattr(tools.sources, "_news_raw", lambda t: [])
     monkeypatch.setattr(
-        tools, "_http_get",
+        tools.sources, "_http_get",
         lambda url: ('<?xml version="1.0"?><rss version="2.0"><channel>'
                      "<item><title>Headline one</title><link>http://x</link></item>"
                      "</channel></rss>"))
-    monkeypatch.setattr(tools, "_ddgs_text",
+    monkeypatch.setattr(tools.sources, "_ddgs_text",
                         lambda q, max_results: [
                             {"title": "Commentary", "body": "b", "href": "http://x"}])
     monkeypatch.setattr(
@@ -138,7 +138,7 @@ def test_replan_stamped_automatically_after_failed_observation(trace, store):
     monkey_frame = {"fetch_fails": True}
     import helpers  # noqa: F401 - ensure module is loaded for patching below
     # patched inside the test body because the fixture mocks success:
-    import src.tools as tools_module
+    import src.tools.sources as tools_module
 
     original_fetch = tools_module._fetch_history
 
@@ -168,7 +168,7 @@ def test_malformed_action_is_retried_then_skipped(trace, store):
         _action("finish"),
     ]
     # first LLM reply is malformed (invalid JSON) via an exception:
-    from src.llm_client import LLMValidationError
+    from src.runtime.llm_client import LLMValidationError
 
     llm.payloads[0] = LLMValidationError("invalid JSON")
     loop = AgentLoop("single", "NVDA", config.WHITELISTS["single"], llm, trace,

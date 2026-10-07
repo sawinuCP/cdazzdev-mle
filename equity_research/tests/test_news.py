@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src import news
+from src.data import news
 
 
 def _headline(title: str, source: str = "Test") -> dict:

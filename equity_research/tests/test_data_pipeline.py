@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from src import data_pipeline
+from src.data import data_pipeline
 
 
 def _synthetic_frame(periods: int = 800, seed: int = 11) -> pd.DataFrame:

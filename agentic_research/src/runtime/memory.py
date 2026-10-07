@@ -16,7 +16,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-from . import config
+from .. import config
 
 _LOGGER = logging.getLogger(__name__)
 

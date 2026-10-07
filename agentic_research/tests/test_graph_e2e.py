@@ -7,7 +7,7 @@ import json
 import pytest
 
 from src import config
-from src.graph import run_research
+from src.agents.graph import run_research
 from src.schemas import ResearchReport
 from helpers import FakeLLM, synthetic_frame
 
@@ -18,17 +18,17 @@ def mock_sources(monkeypatch, tmp_path):
     monkeypatch.setattr(config, "CACHE_DIR", tmp_path / "cache")
     monkeypatch.setattr(config, "LOG_TRACE_JSONL", tmp_path / "agent_trace.jsonl")
     monkeypatch.setattr(config, "LLM_CACHE_JSON", tmp_path / ".llm_cache.json")
-    monkeypatch.setattr("src.tracing.config", config)
-    monkeypatch.setattr("src.memory.config", config)
+    monkeypatch.setattr("src.runtime.tracing.config", config)
+    monkeypatch.setattr("src.runtime.memory.config", config)
     monkeypatch.setattr(config, "FAULT_INJECT", {})
-    monkeypatch.setattr("src.tools._fetch_history", lambda t, p: frame)
-    monkeypatch.setattr("src.tools._news_raw", lambda t: [])
+    monkeypatch.setattr("src.tools.sources._fetch_history", lambda t, p: frame)
+    monkeypatch.setattr("src.tools.sources._news_raw", lambda t: [])
     monkeypatch.setattr(
-        "src.tools._http_get",
+        "src.tools.sources._http_get",
         lambda url: ('<?xml version="1.0"?><rss version="2.0"><channel>'
                      "<item><title>Mock headline</title><link>http://x</link></item>"
                      "</channel></rss>"))
-    monkeypatch.setattr("src.tools._ddgs_text",
+    monkeypatch.setattr("src.tools.sources._ddgs_text",
                         lambda q, max_results: [
                             {"title": "Commentary", "body": "b", "href": "http://x"}])
     return frame
@@ -111,7 +111,7 @@ def test_fault_injection_stamps_replan(tmp_path, monkeypatch):
 
 
 def test_crash_injection_returns_degraded(tmp_path, monkeypatch):
-    import src.graph as graph_module
+    import src.agents.graph as graph_module
 
     def exploding(ticker, llm, trace, store):
         raise RuntimeError("injected crash")

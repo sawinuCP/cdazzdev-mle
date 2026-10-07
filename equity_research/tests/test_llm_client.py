@@ -7,8 +7,8 @@ from types import SimpleNamespace
 
 import pytest
 
-from src import llm_client
-from src.llm_client import (
+from src.llm import llm_client
+from src.llm.llm_client import (
     LLMClient,
     LLMError,
     LLMSettings,

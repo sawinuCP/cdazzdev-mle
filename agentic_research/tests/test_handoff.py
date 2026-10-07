@@ -5,10 +5,10 @@ from __future__ import annotations
 import pytest
 
 from src import config, tools
-from src.agents import build_brief_v1
-from src.memory import MemoryStore
+from src.agents.agents import build_brief_v1
+from src.runtime.memory import MemoryStore
 from src.schemas import AgentBrief, ToolResult
-from src.tracing import TraceLogger
+from src.runtime.tracing import TraceLogger
 from helpers import FakeLLM, synthetic_frame
 
 

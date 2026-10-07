@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import numpy as np
 import pandas as pd
 
-from src.llm_client import LLMSettings
+from src.runtime.llm_client import LLMSettings
 
 
 class FakeLLM:

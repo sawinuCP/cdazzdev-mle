@@ -12,9 +12,10 @@ import logging
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from . import config, prompts
-from .llm_client import LLMClient, LLMError, LLMValidationError, failure_records
-from .schemas import (
+from .. import config
+from ..llm import prompts
+from ..llm.llm_client import LLMClient, LLMError, LLMValidationError, failure_records
+from ..schemas import (
     HeadlineSentiment,
     SentimentAggregate,
     SummaryStats,

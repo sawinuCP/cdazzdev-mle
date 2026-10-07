@@ -16,7 +16,7 @@ import matplotlib
 matplotlib.use("Agg")  # headless rendering; the notebook displays the HTML instead
 import matplotlib.pyplot as plt  # noqa: E402  (backend must be set first)
 
-from . import config
+from .. import config
 from .schemas import SentimentAggregate, SummaryStats, TechnicalSignal
 
 DISCLAIMER = (
