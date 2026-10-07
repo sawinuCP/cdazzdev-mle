@@ -17,6 +17,9 @@ lxml>=5.0
 # Agent web search (package renamed upstream: pin the working one)
 duckduckgo-search==8.1.1
 
+# Agent framework (LangGraph StateGraph + conditional edges)
+langgraph>=0.2
+
 # Task 2 data tooling
 rapidfuzz>=3.9
 

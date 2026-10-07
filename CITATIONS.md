@@ -72,3 +72,24 @@ file carries the inline tag and a row here.)*
 - Not applicable to the equity research assistant (no synthetic training data).
 - The fine-tuning project (when added) will store its full teacher system prompt
   verbatim in its data folder and notebook appendix for provenance auditing.
+
+## Agentic financial research system (`agentic_research/`)
+
+| File | Type | Entry |
+|---|---|---|
+| `agentic_research/src/config.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'env wiring, whitelists, caps with reasons, paths, fault-injection hook', Date: 2026-10-06` |
+| `agentic_research/src/schemas.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'typed ReAct models: brief, critique, clarification, validated report', Date: 2026-10-06` |
+| `agentic_research/src/indicators.py` | Adapted code (copied from `equity_research/src/indicators.py` at commit `9b00d33`, `# SOURCE:` header) | Project-scoped reuse; per-file origin recorded inline |
+| `agentic_research/src/llm_client.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'OpenAI-compatible client: retry, JSON repair, response cache, cache-hit flag', Date: 2026-10-06` |
+| `agentic_research/src/tracing.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'JSONL trace logger with in-memory mirror and digest outputs', Date: 2026-10-06` |
+| `agentic_research/src/memory.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'session memory store plus daily persistent cache with schema versioning and corruption guard', Date: 2026-10-06` |
+| `agentic_research/src/prompts.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'all agent protocol, critique writer, clarification, composer and memory prompts as constants', Date: 2026-10-06` |
+| `agentic_research/src/tools.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'five tools with ToolResult contract, arg models, injected data sources, digest summaries', Date: 2026-10-06` |
+| `agentic_research/src/agents.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'ReAct agent loop: JSON-action protocol, duplicate and iteration guards, replan stamping, whitelist enforcement', Date: 2026-10-06` |
+| `agentic_research/src/graph.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'LangGraph state machine: cache check, two-agent roles, exactly-one critique cycle, save cache', Date: 2026-10-06` |
+| `agentic_research/src/main.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'public entry points: single-agent mode, memory follow-up, CLI', Date: 2026-10-06` |
+| `agentic_research/src/printing.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'human-readable trace renderer with per-agent summary counts', Date: 2026-10-06` |
+| `agentic_research/tests/*` (10 files + conftest + helpers) | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'offline pytest suite: indicators goldens/edges, tools, agents, whitelist pairs, handoff, schemas, graph e2e with fault and crash injection, memory/cache, hygiene', Date: 2026-10-06` |
+| `agentic_research/notebooks/agentic_research.ipynb` | AI-assisted artifact | Generated and executed by Cline (Claude Sonnet 5.5); agent reasoning produced by GLM-5.3-Flash via the configured OpenAI-compatible gateway; repeated calls replayed from the committed response cache |
+| `agentic_research/dashboards/trace_dashboard.py` | AI-assisted code | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'streamlit trace dashboard: run filter, per-agent tool histogram, duration bars, success pie, replan table', Date: 2026-10-06` |
+| `agentic_research/README.md` | AI-assisted document | `# AI-ASSISTED: Cline (Claude Sonnet 5.5), Prompt: 'project README: architecture diagram, guard semantics, run instructions, honest notes', Date: 2026-10-06` |
