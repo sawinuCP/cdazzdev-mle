@@ -25,7 +25,7 @@ scenario matrix (540 tuples) ──▶ sample 170 ──▶ teacher (GLM-5.3-Fla
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](<COLAB_NOTEBOOK_LINK_PLACEHOLDER>)
 
-**Fine-tuned model:** <HUGGINGFACE_MODEL_LINK_PLACEHOLDER>
+**Fine-tuned model (merged, saved to Drive):** <GOOGLE_DRIVE_LINK_PLACEHOLDER>
 
 ## Stage 1 — dataset (any machine, API-bound)
 
@@ -44,10 +44,12 @@ counts, near-duplicate filter (rapidfuzz), and a running family-share cap.
 ## Stage 2 — fine-tuning (Colab T4)
 
 Open `notebooks/finetune_and_evaluate.ipynb` in Colab and run top to bottom:
-keys come from Colab Secrets (`TEACHER_API_KEY`, `JUDGE_API_KEY`, `HF_TOKEN`);
-the notebook verifies the chat template, generates the **base-model baseline
-first**, trains with TRL `SFTTrainer` (assistant-token loss), monitors per-epoch
-train/validation loss, merges the adapters, and pushes to the Hugging Face Hub.
+keys come from Colab Secrets (`TEACHER_API_KEY`, `JUDGE_API_KEY` — the same
+gateway key works for both; the models differ); the notebook verifies the chat
+template, generates the **base-model baseline first**, trains with TRL
+`SFTTrainer` (assistant-token loss), monitors per-epoch train/validation loss,
+merges the adapters (`merge_and_unload()`), and saves the merged model to
+Google Drive (a Hugging Face push is optional and off by default).
 
 ## Stage 3 — evaluation (runs in the notebook; modules reusable anywhere)
 
