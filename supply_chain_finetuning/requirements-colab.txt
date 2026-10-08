@@ -3,8 +3,10 @@
 # releases (max_seq_length -> max_length etc.), so the notebook also probes
 # the installed SFTConfig signature at runtime instead of trusting defaults.
 #
-# Colab ships torch; pinning the major line keeps bitsandbytes/flash kernels happy.
-torch>=2.3,<2.6
+# torch is NOT pinned: pip must keep Colab's preinstalled CUDA torch (and its
+# matching torchvision) intact. Pinning torch below the image's version made
+# pip downgrade torch while torchvision stayed, which breaks the
+# transformers import on the Python 3.13 image.
 transformers>=4.44,<4.47
 trl>=0.11,<0.13
 peft>=0.12,<0.14
